@@ -1,0 +1,31 @@
+import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
+import 'package:s_factory/domain/entities/product/production_order_entity.dart';
+import 'package:s_factory/domain/repository/product_repository.dart';
+
+import '../entities/data_state.dart';
+
+class ProductUseCase {
+  ProductUseCase(this._productRepository);
+
+  final ProductRepository _productRepository;
+
+  Future<DataState<CheckSerialEntity>> stampCheckUniqueCode(
+    String serial,
+  ) async {
+    DataState<CheckSerialEntity> entity =
+        await _productRepository.stampCheckUniqueCode(
+      serial,
+    );
+    return entity;
+  }
+
+  Future<DataState<ProductionOrderEntity>> factoryProductionOrderDetail(
+    String poId,
+  ) async {
+    DataState<ProductionOrderEntity> entity =
+        await _productRepository.factoryProductionOrderDetail(
+      poId,
+    );
+    return entity;
+  }
+}
