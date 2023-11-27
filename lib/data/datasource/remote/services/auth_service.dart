@@ -27,6 +27,24 @@ class AuthService with ConvertAbleDataState {
     }
   }
 
+  Future<DataState<AuthEntity>> identityLoginWithBusinessRole(
+    String roleId,
+  ) async {
+    try {
+      final DataResponse<LoginResponse2>? response =
+          await _api.identityLoginWithBusinessRole(<String, String>{
+        'businessRoleId': roleId,
+      });
+
+      return convertToDataState<AuthEntity, LoginResponse2>(
+          response, AuthResponseMapper());
+    } catch (error) {
+      return DataFailed<AuthEntity>(
+        error.toString(),
+      );
+    }
+  }
+
   void setNewToken(String token) {
     _api.setNewToken(token);
   }

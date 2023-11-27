@@ -20,9 +20,31 @@ class UpdateValueProductEvent extends ReportEvent {
     this.value,
     this.serial,
     this.standardId,
+    this.result,
   });
 
   final String? standardId;
   final String? serial;
   final String? value;
+  final ReportStandardResult? result;
+}
+
+class ConfirmReportEvent extends ReportEvent {
+  const ConfirmReportEvent({
+    this.provider,
+    this.document,
+    this.modelNumber,
+    this.ng,
+    this.result,
+    this.note,
+    this.productionOrder,
+  });
+
+  final String? provider;
+  final String? document;
+  final String? modelNumber;
+  final String? ng;
+  final String? result;
+  final String? note;
+  final ProductionOrderModel? productionOrder;
 }

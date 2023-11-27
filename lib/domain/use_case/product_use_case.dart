@@ -1,5 +1,7 @@
+import 'package:s_factory/data/datasource/remote/body/production_order_report_body.dart';
 import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
+import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
 import 'package:s_factory/domain/repository/product_repository.dart';
 
 import '../entities/data_state.dart';
@@ -25,6 +27,16 @@ class ProductUseCase {
     DataState<ProductionOrderEntity> entity =
         await _productRepository.factoryProductionOrderDetail(
       poId,
+    );
+    return entity;
+  }
+
+  Future<DataState<ProductionOrderReportEntity>> factoryProductionOrderReport(
+    POReportArgs body,
+  ) async {
+    DataState<ProductionOrderReportEntity> entity =
+        await _productRepository.factoryProductionOrderReport(
+      body,
     );
     return entity;
   }

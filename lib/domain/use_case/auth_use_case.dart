@@ -17,6 +17,15 @@ class AuthUseCase {
     return entity;
   }
 
+  Future<DataState<AuthEntity>> identityLoginWithBusinessRole(
+      String roleId) async {
+    DataState<AuthEntity> entity =
+        await _authRepository.identityLoginWithBusinessRole(
+      roleId,
+    );
+    return entity;
+  }
+
   // Future<UserInfoEntity> getUserInfo() async {
   //   UserInfoEntity entity = await _authRepository.getUserInfo();
   //   return entity;

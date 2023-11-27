@@ -17,4 +17,13 @@ class AuthRequest {
   }
   } 
   ''';
+  static const String identityLoginWithBusinessRole = r'''
+    mutation identityLoginWithBusinessRole($businessRoleId: String!){
+      identityLoginWithBusinessRole(businessRoleId: $businessRoleId) 
+      {
+    accessToken
+    refreshToken
+      }
+    } 
+  ''';
 }

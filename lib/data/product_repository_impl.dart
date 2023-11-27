@@ -1,7 +1,9 @@
+import 'package:s_factory/data/datasource/remote/body/production_order_report_body.dart';
 import 'package:s_factory/data/datasource/remote/product_remote_data_source%20.dart';
 import 'package:s_factory/domain/entities/data_state.dart';
 import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
+import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
 import 'package:s_factory/domain/repository/product_repository.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
@@ -23,6 +25,15 @@ class ProductRepositoryImpl extends ProductRepository {
   ) async {
     DataState<ProductionOrderEntity> response =
         await _productRemoteDataSource.factoryProductionOrderDetail(poId);
+    return response;
+  }
+
+  @override
+  Future<DataState<ProductionOrderReportEntity>> factoryProductionOrderReport(
+    POReportArgs body,
+  ) async {
+    DataState<ProductionOrderReportEntity> response =
+        await _productRemoteDataSource.factoryProductionOrderReport(body);
     return response;
   }
 }

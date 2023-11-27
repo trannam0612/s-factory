@@ -103,41 +103,95 @@ class GraphQLImplementation<T> implements IGraphQLClient {
   }
 
   @override
-  Future<QueryResult> mutation(
+  Future<DataResponse<T>?> mutation<T extends BaseResponse2>(
     String doc,
     String tag, {
     Map<String, dynamic> vars = const <String, dynamic>{},
   }) async {
     logi(message: 'Authorization:${_headers['Authorization']}');
 
-    final MutationOptions<Object?> options = MutationOptions<Object?>(
-      operationName: tag,
+    final WatchQueryOptions<Object?> options = WatchQueryOptions(
       document: gql(doc),
       variables: vars,
+      operationName: tag,
+      fetchPolicy: FetchPolicy.noCache,
       cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
     );
-    late QueryResult<Object?> response;
+    DataResponse<T>? result;
     try {
       logi(
           message:
-              '-----------------MUTATION GRAPHQL API REQUEST------------------');
+              '-----------------QUERY GRAPHQL API REQUEST------------------');
       logi(message: 'DOCUMENTS:\n$doc');
       logi(message: 'VARIABLES:\n$vars');
 
-      response = await _client.mutate(options);
+      final QueryResult<Object?> response = await _client.query(options);
 
       logi(
           message:
-              '-----------------MUTATION GRAPHQL API RESPONSE------------------');
+              '-----------------QUERY GRAPHQL API RESPONSE------------------');
       logi(message: 'DATA:\n${response.toString()}');
-      return response;
+
+      //
+      // if (response.hasException || response.exception != null) {
+      //   final Iterable<String>? errors = response.exception?.graphqlErrors
+      //       .map((GraphQLError e) => e.message);
+      //   // result = DataResponse<T>?;
+      //   result?.message = errors?.first;
+      //   logi(message: 'result?.message${result?.message}');
+      //   result?.code = NetworkStatusCode.badRequest;
+      //   logi(message: 'result?.code${result?.code}');
+
+      //   return result;
+      // }
+
+      //
+      result = DataResponse<T>.fromGraphQLReq(response, tag);
+      if (response.hasException || response.exception != null) {
+        result.code = NetworkStatusCode.newsError;
+      } else {
+        result.code = NetworkStatusCode.success;
+      }
     } catch (e) {
+      loge(message: 'ERROR:\n${e.toString()}');
       if (e is OperationException) {
         final List<String> errors =
             e.graphqlErrors.map((GraphQLError e) => e.message).toList();
-        print('errors:${errors}');
+        result?.message = errors.first;
+        result?.code = NetworkStatusCode.badRequest;
       }
-      return response;
     }
+    return result;
+    // logi(message: 'Authorization:${_headers['Authorization']}');
+
+    // final MutationOptions<Object?> options = MutationOptions<Object?>(
+    //   operationName: tag,
+    //   document: gql(doc),
+    //   variables: vars,
+    //   cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
+    // );
+    // late QueryResult<Object?> response;
+    // try {
+    //   logi(
+    //       message:
+    //           '-----------------MUTATION GRAPHQL API REQUEST------------------');
+    //   logi(message: 'DOCUMENTS:\n$doc');
+    //   logi(message: 'VARIABLES:\n$vars');
+
+    //   response = await _client.mutate(options);
+
+    //   logi(
+    //       message:
+    //           '-----------------MUTATION GRAPHQL API RESPONSE------------------');
+    //   logi(message: 'DATA:\n${response.toString()}');
+    //   return response;
+    // } catch (e) {
+    //   if (e is OperationException) {
+    //     final List<String> errors =
+    //         e.graphqlErrors.map((GraphQLError e) => e.message).toList();
+    //     print('errors:${errors}');
+    //   }
+    //   return response;
+    // }
   }
 }

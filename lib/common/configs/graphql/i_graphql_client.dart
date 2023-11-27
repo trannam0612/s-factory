@@ -12,7 +12,7 @@ abstract class IGraphQLClient {
     Map<String, dynamic> vars = const <String, dynamic>{},
   });
 
-  Future<QueryResult> mutation(
+  Future<DataResponse<T>?> mutation<T extends BaseResponse2>(
     String doc,
     String tag, {
     Map<String, dynamic> vars = const <String, dynamic>{},

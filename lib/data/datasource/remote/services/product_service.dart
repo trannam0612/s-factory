@@ -1,12 +1,16 @@
+import 'package:s_factory/data/datasource/remote/body/production_order_report_body.dart';
 import 'package:s_factory/data/datasource/remote/graphql/product_graphql.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/check_serial_response.dart';
+import 'package:s_factory/data/datasource/remote/responses/product/production_order_report_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/test_base_response.dart';
 import 'package:s_factory/data/datasource/remote/services/base_service.dart';
 import 'package:s_factory/data/mapper/product/check_serial_response_mapper.dart';
 import 'package:s_factory/data/mapper/product/factory_production_order_detail_response_mapper.dart';
+import 'package:s_factory/data/mapper/product/factory_production_order_report_response_mapper.dart';
 import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
+import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
 
 import '../../../../domain/entities/data_state.dart';
 
@@ -46,6 +50,23 @@ class ProductService with ConvertAbleDataState {
           response, FactoryProductionOrderDetailResponseMapper());
     } catch (error) {
       return DataFailed<ProductionOrderEntity>(
+        error.toString(),
+      );
+    }
+  }
+
+  Future<DataState<ProductionOrderReportEntity>> factoryProductionOrderReport(
+    POReportArgs body,
+  ) async {
+    try {
+      final DataResponse<ProductionOrderReportResponse>? response =
+          await _api.factoryProductionOrderReport(body);
+
+      return convertToDataState<ProductionOrderReportEntity,
+              ProductionOrderReportResponse>(
+          response, FactoryProductionOrderReportResponseMapper());
+    } catch (error) {
+      return DataFailed<ProductionOrderReportEntity>(
         error.toString(),
       );
     }

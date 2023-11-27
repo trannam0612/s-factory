@@ -23,5 +23,6 @@ class ColorConstant {
   static const Color kSupportInfo = Color(0xFFF5F9FF);
 
   static const Color kNeuTral02 = Color(0xFFF2F2F2);
+  static const Color kNeuTral03 = Color(0xFFA0A5A9);
   static const Color kNeuTral04 = Color(0xFF929292);
 }

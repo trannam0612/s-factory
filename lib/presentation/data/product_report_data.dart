@@ -1,9 +1,17 @@
-import 'package:s_factory/presentation/model/standard_product_model.dart';
+import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 
-class ProductReportData {
-  ProductReportData({
-    this.serial,
-    this.listStandard,
+class StandardProductReportData {
+  StandardProductReportData({
+    this.id,
+    this.name,
+    this.standard,
+    this.description,
+    this.tool,
+    this.type,
+    this.version,
+    this.reviewType,
+    this.listStandardValue,
+    this.result = true,
   });
 
   // factory ProductTypeModel.fromEntity({ProductTypeEntity? entity}) {
@@ -30,17 +38,71 @@ class ProductReportData {
   //         .toList(),
   //   );
   // }
+  final String? id;
+  final String? name;
+  final String? standard;
+  final String? description;
+  final String? tool;
+  final String? type;
+  final String? version;
+  final String? reviewType;
+  final bool? result;
+  final List<StandardValueData>? listStandardValue;
+
+  StandardProductReportData copyWith({
+    String? id,
+    String? name,
+    String? standard,
+    String? description,
+    String? tool,
+    String? type,
+    String? version,
+    String? reviewType,
+    bool? result,
+    List<StandardValueData>? listStandardValue,
+  }) {
+    return StandardProductReportData(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      standard: standard ?? this.standard,
+      description: description ?? this.description,
+      tool: tool ?? this.tool,
+      type: type ?? this.type,
+      version: version ?? this.version,
+      reviewType: reviewType ?? this.reviewType,
+      result: result ?? this.result,
+      listStandardValue: listStandardValue ?? this.listStandardValue,
+    );
+  }
+}
+
+class StandardValueData {
+  StandardValueData({
+    this.serial,
+    this.value,
+    this.result = ReportStandardResult.pass,
+  });
 
   final String? serial;
-  final List<StandardProductModel>? listStandard;
+  final dynamic value;
+  final ReportStandardResult? result;
 
-  ProductReportData copyWith({
+  bool get isPass => result == ReportStandardResult.pass;
+  String get getValue => value != null
+      ? value.toString()
+      : result == ReportStandardResult.pass
+          ? ReportStandardResult.pass.value ?? ''
+          : ReportStandardResult.fail.value ?? '';
+
+  StandardValueData copyWith({
     String? serial,
-    List<StandardProductModel>? listStandard,
+    dynamic value,
+    ReportStandardResult? result,
   }) {
-    return ProductReportData(
+    return StandardValueData(
       serial: serial ?? this.serial,
-      listStandard: listStandard ?? this.listStandard,
+      value: value ?? this.value,
+      result: result ?? this.result,
     );
   }
 }

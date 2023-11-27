@@ -20,6 +20,17 @@ class AuthGraphQLImplement extends AuthGraphQL {
   }
 
   @override
+  Future<DataResponse<LoginResponse2>?> identityLoginWithBusinessRole(
+      Map<String, dynamic> params) async {
+    final DataResponse<LoginResponse2>? response = await _client.query(
+      AuthRequest.identityLoginWithBusinessRole,
+      'identityLoginWithBusinessRole',
+      vars: params,
+    );
+    return response;
+  }
+
+  @override
   void setNewToken(String token) {
     _client.setNewToken(token);
   }

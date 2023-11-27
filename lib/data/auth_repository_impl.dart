@@ -22,4 +22,20 @@ class AuthRepositoryImpl extends AuthRepository {
     }
     return response;
   }
+
+  @override
+  Future<DataState<AuthEntity>> identityLoginWithBusinessRole(
+      String roleId) async {
+    DataState<AuthEntity> response =
+        await _authRemoteDataSource.identityLoginWithBusinessRole(
+      roleId,
+    );
+    if (response.isSuccess()) {
+      final String? token = response.data?.token;
+      if (token != null) {
+        _authRemoteDataSource.setNewToken(token);
+      }
+    }
+    return response;
+  }
 }

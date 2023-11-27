@@ -15,6 +15,15 @@ class AuthRemoteDataSource {
     return loginResponse;
   }
 
+  Future<DataState<AuthEntity>> identityLoginWithBusinessRole(
+    String roleId,
+  ) async {
+    final DataState<AuthEntity> loginResponse =
+        await _authService.identityLoginWithBusinessRole(roleId);
+
+    return loginResponse;
+  }
+
   void setNewToken(String token) {
     _authService.setNewToken(token);
   }

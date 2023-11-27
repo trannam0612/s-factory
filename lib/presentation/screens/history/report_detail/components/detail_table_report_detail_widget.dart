@@ -6,7 +6,7 @@ import 'package:s_factory/presentation/utils/color_constant.dart';
 
 class DetailTableReportDetailWidget extends StatelessWidget {
   DetailTableReportDetailWidget({super.key});
-  final List<InfoDetailItemModel> listItem = <InfoDetailItemModel>[
+  final listItem = <InfoDetailItemModel>[
     InfoDetailItemModel(
         no: 'CT01',
         testItem: 'Thông mạch',

@@ -4,4 +4,6 @@ import 'package:s_factory/data/datasource/remote/responses/test_base_response.da
 abstract class AuthGraphQL {
   void setNewToken(String token);
   Future<DataResponse<LoginResponse2>?> login(Map<String, dynamic> params);
+  Future<DataResponse<LoginResponse2>?> identityLoginWithBusinessRole(
+      Map<String, dynamic> params);
 }
