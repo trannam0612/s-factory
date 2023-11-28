@@ -146,7 +146,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> _handleConfirmReport(
       ConfirmReportEvent event, Emitter<HomeState> emit) async {
-    logi(message: '_handleConfirmReport');
+    logi(message: '_handleConfirmReport:${state.listProductModel?.length}');
     final List<ProductModel> listItem = state.listProductModel ?? [];
 
     if (listItem.isNullOrEmpty) {

@@ -39,12 +39,16 @@ Standard _$StandardFromJson(Map<String, dynamic> json) => Standard(
           ?.map((e) => SampleStandard.fromJson(e as Map<String, dynamic>))
           .toList(),
       result: json['result'] as String?,
+      ngCount: json['ngCount'] as int?,
+      note: json['note'] as String?,
     );
 
 Map<String, dynamic> _$StandardToJson(Standard instance) => <String, dynamic>{
       'standardId': instance.standardId,
       'sampleStandards': instance.sampleStandards,
       'result': instance.result,
+      'ngCount': instance.ngCount,
+      'note': instance.note,
     };
 
 SampleStandard _$SampleStandardFromJson(Map<String, dynamic> json) =>

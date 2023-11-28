@@ -8,13 +8,14 @@ import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/app/app_bloc.dart';
 import 'package:s_factory/presentation/app/app_event.dart';
 import 'package:s_factory/presentation/data/product_report_data.dart';
-import 'package:s_factory/presentation/screens/report/components/input_edit_value_widget.dart';
+import 'package:s_factory/presentation/screens/report/components/bottom_sheet_components/bs_select_standard_status_widget.dart';
+import 'package:s_factory/presentation/screens/report/components/bottom_sheet_components/bs_edit_detail_product_widget.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 
 class TableReportDetailWidget extends StatefulWidget {
-  TableReportDetailWidget({
+  const TableReportDetailWidget({
     super.key,
   });
 
@@ -31,7 +32,74 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
     _reportBloc = context.read();
   }
 
-  DataRow _resultsAPI(index, StandardProductReportData data) {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: ColorConstant.kWhite,
+      width: double.infinity,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        child: BlocConsumer<ReportBloc, ReportState>(
+          listenWhen: (ReportState previous, ReportState current) =>
+              previous.updateDataDetailState != current.updateDataDetailState,
+          listener: (BuildContext context, ReportState state) {
+            switch (state.updateDataDetailState) {
+              case LoadState.loading:
+                context.read<AppBloc>().add(OnShowLoadingEvent());
+                break;
+              case LoadState.failure:
+                context.read<AppBloc>().add(OnHideLoadingEvent());
+                getIt<NavigationService>().pop();
+                break;
+              case LoadState.success:
+                context.read<AppBloc>().add(OnHideLoadingEvent());
+                getIt<NavigationService>().pop();
+                break;
+              default:
+            }
+          },
+          builder: (BuildContext context, ReportState state) {
+            final List<StandardProductReportData> listProduct =
+                state.listProductDetail ?? <StandardProductReportData>[];
+            final List<String> listSerial = state.listSerial ?? <String>[];
+            logi(message: 'listProduct:${listProduct.length}');
+            return DataTable(
+              headingRowColor: MaterialStateColor.resolveWith(
+                (Set<MaterialState> states) => ColorConstant.kSupportInfo,
+              ),
+              dataRowColor: MaterialStateProperty.all(Colors.green),
+              columnSpacing: 0,
+              horizontalMargin: 0,
+              border: TableBorder.all(
+                color: ColorConstant.kNeuTral02,
+              ),
+              columns: <DataColumn>[
+                _buildTitleTableWidget(context, value: 'STT'),
+                _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
+                _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
+                ...List<DataColumn>.generate(listSerial.length, ((int index) {
+                  return _buildTitleTableWidget(context,
+                      value: 'M-${index + 1}');
+                })),
+                _buildTitleTableWidget(context, value: 'Kết quả'),
+                _buildTitleTableWidget(context, value: 'Công cụ đo'),
+              ],
+              rows: List<DataRow>.generate(
+                listProduct.length,
+                (int index) => _buildDataRow(
+                  index,
+                  listProduct[index],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  DataRow _buildDataRow(int index, StandardProductReportData data) {
     final List<StandardValueData> listStandardValue =
         data.listStandardValue ?? <StandardValueData>[];
     return DataRow(
@@ -56,34 +124,55 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
         ),
         ...List<DataCell>.generate(
           listStandardValue.length,
-          (int index) => _buildValueTableWidget(
-            context,
-            isPass: listStandardValue[index].isPass,
-            value: listStandardValue[index].value.toString(),
-            bgColor: ColorConstant.kWhite,
-            onTap: () {
-              getIt<NavigationService>().openBottomSheet(
-                widget: InputEditValueWidget(
-                  value: listStandardValue[index].getValue,
-                  onTapConfirm: (String? p0, ReportStandardResult? result) {
-                    logi(message: 'message:$p0-----$result');
-                    // _reportBloc.add(UpdateValueProductEvent(
-                    //   value: listStandardValue[index].getValue,
-                    //   standardId: data.id,
-                    //   serial: listStandardValue[index].serial,
-                    //   result: result,
-                    // ));
-                  },
-                ),
-              );
-            },
-          ),
+          (int index) {
+            final String? value = listStandardValue[index].value;
+            final ReportStandardResult? result =
+                listStandardValue[index].result;
+
+            final String? newValue =
+                value?.isNotEmpty == true ? value : result?.value;
+            return _buildValueTableWidget(
+              context,
+              isPass: listStandardValue[index].result,
+              value: '$newValue',
+              bgColor: ColorConstant.kWhite,
+              onTap: () {
+                getIt<NavigationService>().openBottomSheet(
+                  widget: InputEditValueWidget(
+                    value: listStandardValue[index].value ?? '',
+                    result: listStandardValue[index].result ??
+                        ReportStandardResult.pass,
+                    onTapConfirm: (String? p0, ReportStandardResult? result) {
+                      _reportBloc.add(UpdateValueProductDetailEvent(
+                        value: p0,
+                        standardId: data.id,
+                        serial: listStandardValue[index].serial,
+                        result: result,
+                      ));
+                    },
+                  ),
+                );
+              },
+            );
+          },
         ),
-        _buildValueTableWidget(
+        _buildPOStatusCellWidget(
           context,
-          value: data.result == true ? 'PASS' : 'FAIL',
-          bgColor: ColorConstant.kSupportInfo,
+          value: data.result?.value ?? '',
+          bgColor: ColorConstant.kWhite,
           isPass: data.result,
+          onTap: () {
+            getIt<NavigationService>().openBottomSheet(
+                widget: BSSelectStandardStatusWidget(
+              currentStatus: data.result ?? ReportStandardResult.pass,
+              onTapConfirm: (ReportStandardResult? p0) {
+                _reportBloc.add(UpdatePOStatusEvent(
+                  result: p0,
+                  standardId: data.id,
+                ));
+              },
+            ));
+          },
         ),
         _buildValueTableWidget(
           context,
@@ -91,79 +180,6 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
           bgColor: ColorConstant.kSupportInfo,
         ),
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: ColorConstant.kWhite,
-      width: double.infinity,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        child: BlocConsumer<ReportBloc, ReportState>(
-          listenWhen: (ReportState previous, ReportState current) =>
-              previous.updateValueState != current.updateValueState,
-          listener: (BuildContext context, ReportState state) {
-            switch (state.updateValueState) {
-              case LoadState.loading:
-                context.read<AppBloc>().add(OnShowLoadingEvent());
-
-                break;
-              case LoadState.failure:
-                context.read<AppBloc>().add(OnHideLoadingEvent());
-                getIt<NavigationService>().pop();
-                // getIt<NavigationService>().openDialog(
-                //   title: 'Lỗi',
-                //   content: state.message,
-                // );
-                break;
-              case LoadState.success:
-                context.read<AppBloc>().add(OnHideLoadingEvent());
-                getIt<NavigationService>().pop();
-
-                // getIt<NavigationService>().navigateToAndRemoveUntil(
-                //     HomeScreen.pathRoute, (Route<dynamic> route) => false);
-
-                break;
-              default:
-            }
-          },
-          builder: (BuildContext context, ReportState state) {
-            final List<StandardProductReportData> listProduct =
-                state.listProduct ?? <StandardProductReportData>[];
-            final List<String> listSerial = state.listSerial ?? <String>[];
-            logi(message: 'listProduct:${listProduct.length}');
-            return DataTable(
-              headingRowColor: MaterialStateColor.resolveWith(
-                (Set<MaterialState> states) => ColorConstant.kSupportInfo,
-              ),
-              dataRowColor: MaterialStateProperty.all(Colors.green),
-              columnSpacing: 0,
-              horizontalMargin: 0,
-              columns: <DataColumn>[
-                _buildTitleTableWidget(context, value: 'STT'),
-                _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
-                _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
-                ...List<DataColumn>.generate(listSerial.length, ((int index) {
-                  return _buildTitleTableWidget(context,
-                      value: 'M-${index + 1}');
-                })),
-                _buildTitleTableWidget(context, value: 'Kết quả'),
-                _buildTitleTableWidget(context, value: 'Công cụ đo'),
-              ],
-              rows: List<DataRow>.generate(
-                listProduct.length,
-                (int index) => _resultsAPI(
-                  index,
-                  listProduct[index],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 
@@ -188,7 +204,7 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
   DataCell _buildValueTableWidget(
     BuildContext context, {
     Color? bgColor,
-    bool? isPass,
+    ReportStandardResult? isPass,
     required String value,
     Function()? onTap,
   }) =>
@@ -203,7 +219,7 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
                 value,
                 style: WowTextTheme.ts14w400(context).copyWith(
                     color: isPass != null
-                        ? isPass == false
+                        ? isPass == ReportStandardResult.fail
                             ? ColorConstant.kSupportError2
                             : ColorConstant.kSupportSuccess
                         : null),
@@ -216,23 +232,34 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
         ),
         onTap: onTap,
       );
-  // InkWell(
-  //   onTap: onTap,
-  //   child: Container(
-  //     padding: const EdgeInsets.all(15.0),
-  //     color: bgColor ?? ColorConstant.kWhite,
-  //     child: Text(
-  //       value,
-  //       style: WowTextTheme.ts14w400(context).copyWith(
-  //           color: isPass == null
-  //               ? isPass == null
-  //                   ? null
-  //                   : ColorConstant.kSupportError2
-  //               : ColorConstant.kSupportSuccess),
-  //       textAlign: TextAlign.start,
-  //       maxLines: 2,
-  //       overflow: TextOverflow.ellipsis,
-  //     ),
-  //   ),
-  // );
+
+  DataCell _buildPOStatusCellWidget(
+    BuildContext context, {
+    Color? bgColor,
+    ReportStandardResult? isPass,
+    required String value,
+    Function()? onTap,
+  }) =>
+      DataCell(
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          color: bgColor,
+          child: SizedBox.expand(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: WowTextTheme.ts14w400(context).copyWith(
+                    color: isPass == ReportStandardResult.fail
+                        ? ColorConstant.kSupportError2
+                        : ColorConstant.kSupportSuccess),
+                textAlign: TextAlign.start,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+        onTap: onTap,
+      );
 }

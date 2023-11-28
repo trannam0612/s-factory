@@ -2,46 +2,63 @@ part of 'report_bloc.dart';
 
 class ReportState extends Equatable {
   const ReportState({
-    this.listProduct,
+    this.listProductDetail,
+    this.listProductOverView,
     this.getDataListProductState,
-    this.updateValueState,
+    this.updateDataDetailState,
+    this.updateDataOverViewState,
     this.confirmReportState,
     this.listSerial,
+    this.currentPOStatus,
     this.message,
   });
 
   @override
   List<Object?> get props => <Object?>[
-        listProduct,
+        listProductDetail,
+        listProductOverView,
         getDataListProductState,
         confirmReportState,
-        updateValueState,
+        updateDataDetailState,
+        updateDataOverViewState,
         listSerial,
+        currentPOStatus,
         message,
       ];
 
-  final List<StandardProductReportData>? listProduct;
+  final List<StandardProductReportData>? listProductDetail;
+  final List<StandardProductReportData>? listProductOverView;
   final LoadState? getDataListProductState;
   final LoadState? confirmReportState;
-  final LoadState? updateValueState;
+  final LoadState? updateDataDetailState;
+  final LoadState? updateDataOverViewState;
   final List<String>? listSerial;
+  final POStatus? currentPOStatus;
   final String? message;
 
   ReportState copyWith({
-    List<StandardProductReportData>? listProduct,
+    List<StandardProductReportData>? listProductDetail,
+    List<StandardProductReportData>? listProductOverView,
     LoadState? getDataListProductState,
-    LoadState? updateValueState,
+    LoadState? updateDataDetailState,
+    LoadState? updateDataOverViewState,
     LoadState? confirmReportState,
     List<String>? listSerial,
+    POStatus? currentPOStatus,
     String? message,
   }) {
     return ReportState(
-      listProduct: listProduct ?? this.listProduct,
+      listProductDetail: listProductDetail ?? this.listProductDetail,
+      listProductOverView: listProductOverView ?? this.listProductOverView,
       listSerial: listSerial ?? this.listSerial,
-      updateValueState: updateValueState ?? this.updateValueState,
+      updateDataDetailState:
+          updateDataDetailState ?? this.updateDataDetailState,
+      updateDataOverViewState:
+          updateDataOverViewState ?? this.updateDataOverViewState,
       confirmReportState: confirmReportState ?? this.confirmReportState,
       getDataListProductState:
           getDataListProductState ?? this.getDataListProductState,
+      currentPOStatus: currentPOStatus ?? this.currentPOStatus,
       message: message ?? this.message,
     );
   }

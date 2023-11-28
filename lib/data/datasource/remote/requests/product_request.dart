@@ -21,6 +21,7 @@ class ProductRequest {
     }
   } 
   ''';
+
   static const String factoryProductionOrderReport = r'''
     mutation factoryProductionOrderReport($arguments: POReportArgs!){
   factoryProductionOrderReport(arguments: $arguments) {
@@ -67,6 +68,7 @@ class ProductRequest {
       }
     }
   ''';
+
   static const String factoryProductionOrderDetail = r'''
     query factoryProductionOrderDetail($id: String!){
     factoryProductionOrderDetail(id: $id) {
@@ -108,6 +110,66 @@ class ProductRequest {
           reviewType
         }
       }
+    }
+}
+  ''';
+  static const String factoryAllProductionOrders = r'''
+    query factoryAllProductionOrders($filter: ListPOFilter!){
+    factoryAllProductionOrders(id: $filter) {
+      total
+      count
+      productionOrders{
+        code
+        createdAt
+        deletedAt
+        endNo
+        id
+        owner{
+          name
+        }
+        poCode
+        productType {
+        id
+        code
+        name
+        unitCode
+        unitName
+        standardImageUrls
+        detailStandards {
+          id
+          name
+          standard
+          description
+          tool
+          type
+          version
+          reviewType
+        }
+        overviewStandards {
+          id
+          name
+          standard
+          description
+          tool
+          type
+          version
+          reviewType
+        }
+      }
+        productionAt
+        productionCount
+        reports{
+          code
+        }
+        serials{
+          uniqueCode
+          
+        }
+        stampType
+        startNo
+        status
+        uniqueCodes
+        updatedAt
     }
 }
   ''';

@@ -15,9 +15,11 @@ class InputEditValueWidget extends StatelessWidget {
   const InputEditValueWidget({
     super.key,
     required this.value,
+    required this.result,
     this.onTapConfirm,
   });
   final String value;
+  final ReportStandardResult result;
   final Function(String?, ReportStandardResult?)? onTapConfirm;
 
   @override
@@ -26,7 +28,7 @@ class InputEditValueWidget extends StatelessWidget {
         TextEditingController(text: value.toString());
 
     final ValueNotifier<ReportStandardResult?> isPass =
-        ValueNotifier<ReportStandardResult?>(null);
+        ValueNotifier<ReportStandardResult?>(result);
 
     return Padding(
       padding:
@@ -49,11 +51,7 @@ class InputEditValueWidget extends StatelessWidget {
                 isConfirm: true,
                 onTap: () {
                   logi(message: 'onTapConfirm:${txtValue.text}');
-                  if (txtValue.text.isNotNullOrEmpty) {
-                    onTapConfirm?.call(txtValue.text, null);
-                  } else {
-                    onTapConfirm?.call(null, isPass.value);
-                  }
+                  onTapConfirm?.call(txtValue.text, isPass.value);
                 },
               ),
             ],
@@ -71,13 +69,9 @@ class InputEditValueWidget extends StatelessWidget {
                 Expanded(
                   flex: 5,
                   child: WowTitleTextFieldWidget(
+                    textInputType: TextInputType.number,
                     controller: txtValue,
                     title: 'Kết quả kiểm tra',
-                    onChanged: (String? p0) {
-                      if (p0?.isNotEmpty == true) {
-                        isPass.value = null;
-                      }
-                    },
                   ),
                 ),
                 SizedBox(
@@ -116,7 +110,6 @@ class InputEditValueWidget extends StatelessWidget {
                                 onTap: () {
                                   logi(message: 'true');
                                   isPass.value = ReportStandardResult.pass;
-                                  txtValue.clear();
                                 },
                               ),
                             ),
@@ -134,7 +127,6 @@ class InputEditValueWidget extends StatelessWidget {
                                   logi(message: 'fail:$valuePass');
 
                                   isPass.value = ReportStandardResult.fail;
-                                  txtValue.clear();
                                 },
                               ),
                             ),

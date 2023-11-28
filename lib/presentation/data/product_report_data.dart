@@ -11,7 +11,9 @@ class StandardProductReportData {
     this.version,
     this.reviewType,
     this.listStandardValue,
-    this.result = true,
+    this.note,
+    this.ngCount,
+    this.result = ReportStandardResult.pass,
   });
 
   // factory ProductTypeModel.fromEntity({ProductTypeEntity? entity}) {
@@ -46,7 +48,9 @@ class StandardProductReportData {
   final String? type;
   final String? version;
   final String? reviewType;
-  final bool? result;
+  final String? note;
+  final String? ngCount;
+  final ReportStandardResult? result;
   final List<StandardValueData>? listStandardValue;
 
   StandardProductReportData copyWith({
@@ -58,7 +62,9 @@ class StandardProductReportData {
     String? type,
     String? version,
     String? reviewType,
-    bool? result,
+    String? note,
+    String? ngCount,
+    ReportStandardResult? result,
     List<StandardValueData>? listStandardValue,
   }) {
     return StandardProductReportData(
@@ -71,6 +77,8 @@ class StandardProductReportData {
       version: version ?? this.version,
       reviewType: reviewType ?? this.reviewType,
       result: result ?? this.result,
+      note: note ?? this.note,
+      ngCount: ngCount ?? this.ngCount,
       listStandardValue: listStandardValue ?? this.listStandardValue,
     );
   }
@@ -80,12 +88,16 @@ class StandardValueData {
   StandardValueData({
     this.serial,
     this.value,
-    this.result = ReportStandardResult.pass,
+    this.result,
+    this.ngCount,
+    this.note,
   });
 
   final String? serial;
-  final dynamic value;
+  final String? value;
   final ReportStandardResult? result;
+  final int? ngCount;
+  final String? note;
 
   bool get isPass => result == ReportStandardResult.pass;
   String get getValue => value != null
@@ -96,7 +108,7 @@ class StandardValueData {
 
   StandardValueData copyWith({
     String? serial,
-    dynamic value,
+    String? value,
     ReportStandardResult? result,
   }) {
     return StandardValueData(

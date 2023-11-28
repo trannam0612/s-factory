@@ -18,6 +18,7 @@ class WowTitleTextFieldWidget extends StatefulWidget {
     this.topSuffixItem,
     this.maxLine = 1,
     this.controller,
+    this.validator,
   }) : super(key: key);
 
   final String? title;
@@ -30,6 +31,7 @@ class WowTitleTextFieldWidget extends StatefulWidget {
   final Widget? topSuffixItem;
   final int? maxLine;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   @override
   State<WowTitleTextFieldWidget> createState() =>
@@ -97,7 +99,7 @@ class _WowTitleTextFieldWidgetState extends State<WowTitleTextFieldWidget> {
         ValueListenableBuilder<bool>(
           valueListenable: _obscureTextNotifier,
           builder: (_, bool obscureText, __) {
-            return TextField(
+            return TextFormField(
               controller: widget.controller,
               style: WowTextTheme.ts16w400(context).copyWith(
                 color: ColorConstant.kTextColor,
@@ -107,6 +109,7 @@ class _WowTitleTextFieldWidgetState extends State<WowTitleTextFieldWidget> {
               onChanged: widget.onChanged,
               textAlignVertical: TextAlignVertical.center,
               maxLines: widget.maxLine,
+              validator: widget.validator,
               decoration: InputDecoration(
                 focusedBorder: widget.customBorder ?? focusBorder,
                 enabledBorder: widget.customBorder ?? border,

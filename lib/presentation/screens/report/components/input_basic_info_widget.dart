@@ -16,13 +16,19 @@ class InputBasicInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
+      children: <Widget>[
         Flexible(
           flex: 3,
           child: WowTitleTextFieldWidget(
             title: 'Nhà cung cấp',
             requiredField: true,
             controller: txtProvider,
+            validator: (String? text) {
+              if (text == null || text.isEmpty) {
+                return 'Text is empty';
+              }
+              return null;
+            },
           ),
         ),
         SizedBox(
@@ -44,6 +50,12 @@ class InputBasicInfoWidget extends StatelessWidget {
             title: 'Số mẫu',
             requiredField: true,
             controller: txtModelNumber,
+            validator: (String? text) {
+              if (text == null || text.isEmpty) {
+                return 'Text is empty';
+              }
+              return null;
+            },
           ),
         ),
       ],

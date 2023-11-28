@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:s_factory/extended_text_theme.dart';
+import 'package:s_factory/presentation/utils/color_constant.dart';
+import 'package:s_factory/presentation/widgets/s_button_widget.dart';
 
 class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -41,7 +44,8 @@ class NavigationService {
     return navigatorKey.currentState!.popUntil(ModalRoute.withName(routeName));
   }
 
-  Future<void> openDialog({String? title, String? content}) async {
+  Future<void> openDialog(
+      {String? title, String? content, Function()? onTap}) async {
     // if(!_isShowingDialog){
     //   _isShowingDialog = true;
     showDialog(
@@ -49,14 +53,26 @@ class NavigationService {
       builder: (_) => AlertDialog(
         title: Text(
           title ?? '',
-          style: const TextStyle(fontSize: 16),
+          style: WowTextTheme.ts16w600(navigatorKey.currentContext!),
+          textAlign: TextAlign.center,
         ),
         content: SingleChildScrollView(
           child: Text(
             content ?? '',
-            style: const TextStyle(fontSize: 14),
+            style: WowTextTheme.ts14w600(navigatorKey.currentContext!),
+            textAlign: TextAlign.center,
           ),
         ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          SButtonWidget(
+            onClick: onTap,
+            text: 'Đồng ý',
+            textStyle: WowTextTheme.ts16w600(navigatorKey.currentContext!)
+                .copyWith(color: ColorConstant.kWhite),
+            bgColor: ColorConstant.kPrimary01,
+          )
+        ],
       ),
     ).then((dynamic value) {
       // _isShowingDialog = false;

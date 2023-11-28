@@ -17,13 +17,17 @@ part 'report_event.dart';
 part 'report_state.dart';
 
 enum POStatus {
-  failed(value: 'failed'),
-  pass(value: 'pass'),
-  processing(value: 'processing'),
-  unknow(value: 'unknow');
+  failed(value: 'failed', title: 'Failed'),
+  pass(value: 'pass', title: 'Pass'),
+  processing(value: 'processing', title: 'Processing'),
+  unknow(value: 'unknow', title: 'Unknow');
 
-  const POStatus({this.value});
+  const POStatus({
+    this.value,
+    this.title,
+  });
   final String? value;
+  final String? title;
 }
 
 enum ReportStandardResult {
@@ -36,77 +40,105 @@ enum ReportStandardResult {
 }
 
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
-  ReportBloc() : super(ReportState()) {
+  ReportBloc() : super(const ReportState(currentPOStatus: POStatus.pass)) {
     on<InitListProductEvent>(_handleInitListProduct);
-    on<UpdateValueProductEvent>(_handleUpdateValueProduct);
+    on<UpdateValueProductDetailEvent>(_handleUpdateValueProduct);
+    on<UpdateValueProductOverViewEvent>(_handleUpdateValueProductOverView);
+    on<UpdatePOStatusEvent>(_handleUpdatePOStatus);
     on<ConfirmReportEvent>(_handleConfirmReport);
+    on<SelectPOStatusEvent>(_handleSelectPOStatus);
   }
 
   FutureOr<void> _handleInitListProduct(
       InitListProductEvent event, Emitter<ReportState> emit) {
     emit(state.copyWith(getDataListProductState: LoadState.loading));
     try {
-      final List<StandardProductReportData> listProduct =
+      final List<StandardProductReportData> listProductDetail =
+          <StandardProductReportData>[];
+      final List<StandardProductReportData> listProductOverView =
           <StandardProductReportData>[];
       final List<String> listSerial =
           event.productionOrder?.uniqueCodes ?? <String>[];
-      final List<StandardProductModel> listStandard =
+      final List<StandardProductModel> listStandardDetail =
           event.productionOrder?.productType?.detailStandards ??
               <StandardProductModel>[];
+      final List<StandardProductModel> listStandardOverView =
+          event.productionOrder?.productType?.overviewStandards ??
+              <StandardProductModel>[];
 
-      // for (ProductReportData element in listProduct) {
-      //   element = element.copyWith(listStandard: listStandard);
-      //   logi(message: 'element:${element}');
-      // }
-
-      for (int i = 0; i < listStandard.length; i++) {
-        listProduct.add(StandardProductReportData(
-          id: listStandard[i].id,
-          name: listStandard[i].name,
-          description: listStandard[i].description,
-          reviewType: listStandard[i].reviewType,
-          standard: listStandard[i].standard,
-          tool: listStandard[i].tool,
-          type: listStandard[i].type,
+      for (int i = 0; i < listStandardDetail.length; i++) {
+        listProductDetail.add(StandardProductReportData(
+          id: listStandardDetail[i].id,
+          name: listStandardDetail[i].name,
+          description: listStandardDetail[i].description,
+          reviewType: listStandardDetail[i].reviewType,
+          standard: listStandardDetail[i].standard,
+          tool: listStandardDetail[i].tool,
+          type: listStandardDetail[i].type,
         ));
       }
-
-      for (int i = 0; i < listProduct.length; i++) {
-        final List<StandardValueData> listValue = <StandardValueData>[];
-        for (String element in listSerial) {
-          listValue.add(StandardValueData(serial: element, value: 0));
-
-          //     .listStandardValue
-          //     ?.add(StandardValueData(serial: element, value: 0));
-        }
-        listProduct[i] = listProduct[i].copyWith(listStandardValue: listValue);
+      for (int i = 0; i < listStandardOverView.length; i++) {
+        listProductOverView.add(StandardProductReportData(
+            id: listStandardDetail[i].id,
+            name: listStandardDetail[i].name,
+            description: listStandardDetail[i].description,
+            reviewType: listStandardDetail[i].reviewType,
+            standard: listStandardDetail[i].standard,
+            tool: listStandardDetail[i].tool,
+            type: listStandardDetail[i].type,
+            result: ReportStandardResult.pass));
       }
 
-      logi(message: 'listProduct:${listProduct}');
+      for (int i = 0; i < listProductOverView.length; i++) {
+        final List<StandardValueData> listValue = <StandardValueData>[];
+        for (String element in listSerial) {
+          listValue.add(StandardValueData(
+            serial: element,
+            result: ReportStandardResult.pass,
+          ));
+        }
+        listProductOverView[i] =
+            listProductOverView[i].copyWith(listStandardValue: listValue);
+      }
+      for (int i = 0; i < listProductDetail.length; i++) {
+        final List<StandardValueData> listValue = <StandardValueData>[];
+        for (String element in listSerial) {
+          listValue.add(StandardValueData(
+            serial: element,
+            result: ReportStandardResult.pass,
+          ));
+        }
+        listProductDetail[i] =
+            listProductDetail[i].copyWith(listStandardValue: listValue);
+      }
+
+      logi(message: 'listProduct:${listProductDetail}');
       emit(state.copyWith(
-          listSerial: listSerial,
-          listProduct: listProduct,
-          getDataListProductState: LoadState.success));
+        listSerial: listSerial,
+        listProductDetail: listProductDetail,
+        listProductOverView: listProductOverView,
+        getDataListProductState: LoadState.success,
+      ));
     } catch (e) {
       emit(state.copyWith(getDataListProductState: LoadState.failure));
     }
   }
 
   FutureOr<void> _handleUpdateValueProduct(
-      UpdateValueProductEvent event, Emitter<ReportState> emit) {
+      UpdateValueProductDetailEvent event, Emitter<ReportState> emit) {
     emit(state.copyWith(
       getDataListProductState: LoadState.loading,
-      updateValueState: LoadState.loading,
+      updateDataDetailState: LoadState.loading,
     ));
     try {
       final List<StandardProductReportData> listProduct =
-          state.listProduct ?? <StandardProductReportData>[];
+          state.listProductDetail ?? <StandardProductReportData>[];
       final ReportStandardResult? result = event.result;
       final String? value = event.value;
       final String? serial = event.serial;
       final String? standardId = event.standardId;
 
-      if (value != null) {
+      if (value != null || result != null) {
         for (int i = 0; i < listProduct.length; i++) {
           StandardProductReportData productItem = listProduct[i];
           final List<StandardValueData> listStandardValue =
@@ -126,14 +158,96 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       }
 
       emit(state.copyWith(
-        listProduct: listProduct,
+        listProductDetail: listProduct,
         getDataListProductState: LoadState.success,
-        updateValueState: LoadState.success,
+        updateDataDetailState: LoadState.success,
       ));
     } catch (e) {
       emit(state.copyWith(
         getDataListProductState: LoadState.failure,
-        updateValueState: LoadState.failure,
+        updateDataDetailState: LoadState.failure,
+      ));
+    }
+  }
+
+  FutureOr<void> _handleUpdateValueProductOverView(
+      UpdateValueProductOverViewEvent event, Emitter<ReportState> emit) {
+    emit(state.copyWith(
+      getDataListProductState: LoadState.loading,
+      updateDataOverViewState: LoadState.loading,
+    ));
+    try {
+      final List<StandardProductReportData> listProductOverView =
+          state.listProductOverView ?? <StandardProductReportData>[];
+      final ReportStandardResult? result = event.status;
+      final String? ngCount = event.ngCount;
+      final String? note = event.note;
+      final String? standardId = event.standardId;
+
+      for (int i = 0; i < listProductOverView.length; i++) {
+        if (standardId == listProductOverView[i].id) {
+          if (result != null) {
+            listProductOverView[i] = listProductOverView[i].copyWith(
+              result: result,
+            );
+          }
+          if (ngCount != null) {
+            listProductOverView[i] = listProductOverView[i].copyWith(
+              ngCount: ngCount,
+            );
+          }
+          if (note != null) {
+            listProductOverView[i] = listProductOverView[i].copyWith(
+              note: note,
+            );
+          }
+        }
+      }
+
+      emit(state.copyWith(
+        listProductOverView: listProductOverView,
+        getDataListProductState: LoadState.success,
+        updateDataOverViewState: LoadState.success,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        getDataListProductState: LoadState.failure,
+        updateDataOverViewState: LoadState.failure,
+      ));
+    }
+  }
+
+  FutureOr<void> _handleUpdatePOStatus(
+      UpdatePOStatusEvent event, Emitter<ReportState> emit) {
+    emit(state.copyWith(
+      getDataListProductState: LoadState.loading,
+      updateDataDetailState: LoadState.loading,
+    ));
+    try {
+      final List<StandardProductReportData> listProduct =
+          state.listProductDetail ?? <StandardProductReportData>[];
+      final ReportStandardResult? result = event.result;
+      final String? standardId = event.standardId;
+
+      if (result != null) {
+        logi(message: 'result report PO:$result');
+        for (int i = 0; i < listProduct.length; i++) {
+          if (standardId == listProduct[i].id) {
+            listProduct[i] = listProduct[i].copyWith(result: result);
+            logi(message: 'productItem:${listProduct[i]}');
+          }
+        }
+      }
+
+      emit(state.copyWith(
+        listProductDetail: listProduct,
+        getDataListProductState: LoadState.success,
+        updateDataDetailState: LoadState.success,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        getDataListProductState: LoadState.failure,
+        updateDataDetailState: LoadState.failure,
       ));
     }
   }
@@ -141,6 +255,15 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   FutureOr<void> _handleConfirmReport(
       ConfirmReportEvent event, Emitter<ReportState> emit) async {
     emit(state.copyWith(confirmReportState: LoadState.loading));
+    if (event.validate == false) {
+      emit(
+        state.copyWith(
+          confirmReportState: LoadState.failure,
+          message: 'Vui lòng nhập đầy đủ các trường bắt buộc.',
+        ),
+      );
+      return;
+    }
     try {
       final String? providerName = event.provider;
       final String? document = event.document;
@@ -149,31 +272,50 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       final String? poId = event.productionOrder?.id;
       final List<String>? sampleSerials = event.productionOrder?.uniqueCodes;
       POReportArgs body = POReportArgs();
+      late List<Standard>? standardsDetail;
+      if (event.reportType == 0) {
+        standardsDetail = state.listProductDetail
+            ?.map(
+              (StandardProductReportData e) => Standard(
+                  standardId: e.id,
+                  result: e.result?.value,
+                  ngCount: int.parse(e.ngCount ?? '0'),
+                  sampleStandards: e.listStandardValue
+                      ?.map((StandardValueData e) => SampleStandard(
+                            serial: e.serial,
+                            result: e.result?.value,
+                            value: int.parse(e.value ?? '0'),
+                          ))
+                      .toList()),
+            )
+            .toList();
+      } else {
+        standardsDetail = state.listProductOverView
+            ?.map(
+              (StandardProductReportData e) => Standard(
+                  standardId: e.id,
+                  result: e.result?.value,
+                  ngCount: int.parse(e.ngCount ?? '0'),
+                  note: note,
+                  sampleStandards: e.listStandardValue
+                      ?.map((StandardValueData e) => SampleStandard(
+                            serial: e.serial,
+                            result: e.result?.value,
+                            value: int.parse(e.value ?? '0'),
+                          ))
+                      .toList()),
+            )
+            .toList();
+      }
+
       body = body.copyWith(
         providerCode: providerName,
         refDocument: document,
         // model:,
         ngCount: int.tryParse(ng ?? '0'),
-        poStatus: POStatus.pass.value, note: note, poId: poId,
+        poStatus: state.currentPOStatus?.value, note: note, poId: poId,
         sampleSerials: sampleSerials,
-        standards: state.listProduct
-            ?.map(
-              (StandardProductReportData e) => Standard(
-                  standardId: e.id,
-                  result: e.result == true
-                      ? ReportStandardResult.pass.value
-                      : ReportStandardResult.pass.value,
-                  sampleStandards: e.listStandardValue
-                      ?.map((StandardValueData e) => SampleStandard(
-                            serial: e.serial,
-                            result: e.result == true
-                                ? ReportStandardResult.pass.value
-                                : ReportStandardResult.pass.value,
-                            value: e.value?.toInt(),
-                          ))
-                      .toList()),
-            )
-            .toList(),
+        standards: standardsDetail,
       );
 
       final DataState<ProductionOrderReportEntity> dataState =
@@ -200,5 +342,12 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         ),
       );
     }
+  }
+
+  FutureOr<void> _handleSelectPOStatus(
+      SelectPOStatusEvent event, Emitter<ReportState> emit) {
+    emit(state.copyWith(
+      currentPOStatus: event.poStatus,
+    ));
   }
 }

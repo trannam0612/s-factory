@@ -15,8 +15,16 @@ class InitListProductEvent extends ReportEvent {
   final ProductionOrderModel? productionOrder;
 }
 
-class UpdateValueProductEvent extends ReportEvent {
-  const UpdateValueProductEvent({
+class SelectPOStatusEvent extends ReportEvent {
+  const SelectPOStatusEvent({
+    this.poStatus,
+  });
+
+  final POStatus? poStatus;
+}
+
+class UpdateValueProductDetailEvent extends ReportEvent {
+  const UpdateValueProductDetailEvent({
     this.value,
     this.serial,
     this.standardId,
@@ -29,8 +37,33 @@ class UpdateValueProductEvent extends ReportEvent {
   final ReportStandardResult? result;
 }
 
+class UpdatePOStatusEvent extends ReportEvent {
+  const UpdatePOStatusEvent({
+    this.standardId,
+    this.result,
+  });
+
+  final String? standardId;
+  final ReportStandardResult? result;
+}
+
+class UpdateValueProductOverViewEvent extends ReportEvent {
+  const UpdateValueProductOverViewEvent({
+    this.ngCount,
+    this.standardId,
+    this.note,
+    this.status,
+  });
+
+  final String? standardId;
+  final String? ngCount;
+  final String? note;
+  final ReportStandardResult? status;
+}
+
 class ConfirmReportEvent extends ReportEvent {
   const ConfirmReportEvent({
+    this.validate,
     this.provider,
     this.document,
     this.modelNumber,
@@ -38,8 +71,10 @@ class ConfirmReportEvent extends ReportEvent {
     this.result,
     this.note,
     this.productionOrder,
+    this.reportType, //0: detail, 1: overview
   });
 
+  final bool? validate;
   final String? provider;
   final String? document;
   final String? modelNumber;
@@ -47,4 +82,5 @@ class ConfirmReportEvent extends ReportEvent {
   final String? result;
   final String? note;
   final ProductionOrderModel? productionOrder;
+  final int? reportType;
 }

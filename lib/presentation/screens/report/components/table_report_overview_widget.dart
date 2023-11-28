@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:s_factory/common/configs/logger_config.dart';
+import 'package:s_factory/common/constant/enum.dart';
+import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/extended_text_theme.dart';
+import 'package:s_factory/presentation/app/app_bloc.dart';
+import 'package:s_factory/presentation/app/app_event.dart';
+import 'package:s_factory/presentation/data/product_report_data.dart';
 import 'package:s_factory/presentation/model/standard_product_model.dart';
+import 'package:s_factory/presentation/screens/report/components/bottom_sheet_components/bs_edit_overview_product_widget.dart';
+import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
+import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 
-class TableReportOverviewWidget extends StatelessWidget {
+class TableReportOverviewWidget extends StatefulWidget {
   TableReportOverviewWidget({
     super.key,
     required this.listStandard,
   });
   final List<StandardProductModel> listStandard;
+
+  @override
+  State<TableReportOverviewWidget> createState() =>
+      _TableReportOverviewWidgetState();
+}
+
+class _TableReportOverviewWidgetState extends State<TableReportOverviewWidget> {
+  late ReportBloc _reportBloc;
+  @override
+  void initState() {
+    super.initState();
+    _reportBloc = context.read();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,126 +41,246 @@ class TableReportOverviewWidget extends StatelessWidget {
       width: double.infinity,
       // padding: const EdgeInsets.all(20.0),
       child: SingleChildScrollView(
-        // scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        child: Table(
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          border: TableBorder.all(color: ColorConstant.kNeuTral02),
-          columnWidths: <int, TableColumnWidth>{
-            0: FixedColumnWidth(80.w),
-            1: const IntrinsicColumnWidth(flex: 1),
-            2: const IntrinsicColumnWidth(flex: 1),
-            3: FixedColumnWidth(100.w),
-            4: FixedColumnWidth(200.w),
-            5: FixedColumnWidth(80.w),
-            6: const IntrinsicColumnWidth(flex: 1),
-          },
-          children: <TableRow>[
-            TableRow(
-              decoration: const BoxDecoration(
-                color: ColorConstant.kSupportInfo,
-              ),
-              children: <Widget>[
-                _buildTitleTableWidget(context, value: 'STT'),
-                _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
-                _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
-                _buildTitleTableWidget(context, value: 'Mẫu NG'),
-                _buildTitleTableWidget(context, value: 'Ghi chú'),
-                _buildTitleTableWidget(context, value: 'Kết quả'),
-                _buildTitleTableWidget(context, value: 'Công cụ đo'),
-              ],
-            ),
-            ...List<TableRow>.generate(
-              listStandard.length,
-              (int index) => TableRow(
-                decoration: BoxDecoration(
-                  color: index == 3 || index == listStandard.length
-                      ? ColorConstant.kSupportInfo
-                      : ColorConstant.kSupportInfo,
+          // scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          child: BlocConsumer<ReportBloc, ReportState>(
+            listenWhen: (ReportState previous, ReportState current) =>
+                previous.updateDataOverViewState !=
+                current.updateDataOverViewState,
+            listener: (BuildContext context, ReportState state) {
+              switch (state.updateDataOverViewState) {
+                case LoadState.loading:
+                  context.read<AppBloc>().add(OnShowLoadingEvent());
+                  break;
+                case LoadState.failure:
+                  context.read<AppBloc>().add(OnHideLoadingEvent());
+                  getIt<NavigationService>().pop();
+                  break;
+                case LoadState.success:
+                  context.read<AppBloc>().add(OnHideLoadingEvent());
+                  getIt<NavigationService>().pop();
+                  break;
+                default:
+              }
+            },
+            builder: (BuildContext context, ReportState state) {
+              final List<StandardProductReportData> listProductOverView =
+                  state.listProductOverView ?? <StandardProductReportData>[];
+              final List<String> listSerial = state.listSerial ?? <String>[];
+              logi(message: 'listProduct:${listProductOverView.length}');
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: DataTable(
+                  headingRowColor: MaterialStateColor.resolveWith(
+                    (Set<MaterialState> states) => ColorConstant.kSupportInfo,
+                  ),
+                  dataRowColor: MaterialStateProperty.all(Colors.green),
+                  columnSpacing: 0,
+                  horizontalMargin: 0,
+                  border: TableBorder.all(
+                    color: ColorConstant.kNeuTral02,
+                  ),
+                  columns: <DataColumn>[
+                    _buildTitleTableWidget(context, value: 'STT'),
+                    _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
+                    _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
+                    _buildTitleTableWidget(context, value: 'Mẫu NG'),
+                    _buildTitleTableWidget(context, value: 'Ghi chú'),
+                    _buildTitleTableWidget(context, value: 'Kết quả'),
+                    _buildTitleTableWidget(context, value: 'Công cụ đo'),
+                  ],
+                  rows: List<DataRow>.generate(
+                    listProductOverView.length,
+                    (int index) => _buildDataRow(
+                      index,
+                      listProductOverView[index],
+                    ),
+                  ),
                 ),
-                children: <Widget>[
-                  _buildValueTableWidget(
-                    context,
-                    bgColor: ColorConstant.kSupportInfo,
-                    value: '${listStandard[index].type}-$index',
-                  ),
-                  _buildValueTableWidget(
-                    context,
-                    bgColor: ColorConstant.kSupportInfo,
-                    value: listStandard[index].name ?? '',
-                  ),
-                  _buildValueTableWidget(
-                    context,
-                    bgColor: ColorConstant.kSupportInfo,
-                    value: listStandard[index].standard ?? '',
-                  ),
-                  _buildValueTableWidget(
-                    context,
-                    value: listStandard[index].standard ?? '',
-                    onTap: () {},
-                  ),
-                  _buildValueTableWidget(
-                    context,
-                    value: listStandard[index].description ?? '',
-                    onTap: () {},
-                  ),
-                  _buildValueTableWidget(
-                    context,
-                    value: listStandard[index].description ?? '',
-                    onTap: () {},
-                  ),
-                  _buildValueTableWidget(
-                    context,
-                    bgColor: ColorConstant.kSupportInfo,
-                    value: listStandard[index].tool ?? '',
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+              );
+            },
+          )),
     );
   }
 
-  Padding _buildTitleTableWidget(
-    BuildContext context, {
-    required String value,
-  }) =>
-      Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Text(
-          value,
-          style: WowTextTheme.ts14w600(context),
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+  DataRow _buildDataRow(int index, StandardProductReportData data) {
+    return DataRow(
+      color: MaterialStateColor.resolveWith(
+        (Set<MaterialState> states) => ColorConstant.kSupportInfo,
+      ),
+      cells: <DataCell>[
+        _buildValueTableWidget(
+          context,
+          value: '${data.type}0${index + 1}',
+          bgColor: ColorConstant.kSupportInfo,
         ),
-      );
-  Widget _buildValueTableWidget(
+        _buildValueTableWidget(
+          context,
+          value: data.name ?? '',
+          bgColor: ColorConstant.kSupportInfo,
+        ),
+        _buildValueTableWidget(
+          context,
+          value: data.standard ?? '',
+          bgColor: ColorConstant.kSupportInfo,
+        ),
+        _buildValueTableWidget(
+          context,
+          value: data.ngCount ?? '',
+          bgColor: ColorConstant.kWhite,
+          onTap: () {
+            getIt<NavigationService>().openBottomSheet(
+                widget: BSEditOverviewProductWidget(
+              note: data.note ?? '',
+              currentStatus: data.result ?? ReportStandardResult.pass,
+              onTapConfirm:
+                  (String? ngCount, String? note, ReportStandardResult? p0) {
+                _reportBloc.add(UpdateValueProductOverViewEvent(
+                  standardId: data.id,
+                  status: p0,
+                  note: note ?? '',
+                  ngCount: ngCount,
+                ));
+              },
+              ngCount: data.ngCount ?? '0',
+            ));
+          },
+        ),
+        _buildValueTableWidget(
+          context,
+          value: data.note ?? '',
+          bgColor: ColorConstant.kWhite,
+          width: 300.w,
+          onTap: () {
+            getIt<NavigationService>().openBottomSheet(
+                widget: BSEditOverviewProductWidget(
+              note: data.note ?? '',
+              currentStatus: data.result ?? ReportStandardResult.pass,
+              onTapConfirm:
+                  (String? ngCount, String? note, ReportStandardResult? p0) {
+                _reportBloc.add(UpdateValueProductOverViewEvent(
+                  standardId: data.id,
+                  status: p0,
+                  note: note ?? '',
+                  ngCount: ngCount,
+                ));
+              },
+              ngCount: data.ngCount ?? '0',
+            ));
+          },
+        ),
+        _buildPOStatusCellWidget(
+          context,
+          value: data.result?.value ?? '',
+          bgColor: ColorConstant.kWhite,
+          isPass: data.result,
+          onTap: () {
+            getIt<NavigationService>().openBottomSheet(
+                widget: BSEditOverviewProductWidget(
+              note: data.note ?? '',
+              currentStatus: data.result ?? ReportStandardResult.pass,
+              onTapConfirm:
+                  (String? ngCount, String? note, ReportStandardResult? p0) {
+                _reportBloc.add(UpdateValueProductOverViewEvent(
+                  standardId: data.id,
+                  status: p0,
+                  note: note,
+                  ngCount: ngCount,
+                ));
+              },
+              ngCount: data.ngCount ?? '0',
+            ));
+          },
+        ),
+        _buildValueTableWidget(
+          context,
+          value: data.tool ?? '',
+          bgColor: ColorConstant.kSupportInfo,
+        ),
+      ],
+    );
+  }
+
+  DataColumn _buildTitleTableWidget(
     BuildContext context, {
-    Color? bgColor,
-    bool? isPass,
     required String value,
-    Function()? onTap,
   }) =>
-      InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(15.0),
-          color: bgColor ?? ColorConstant.kWhite,
+      DataColumn(
+        label: Container(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          alignment: Alignment.center,
           child: Text(
             value,
-            style: WowTextTheme.ts14w400(context).copyWith(
-                color: isPass == null
-                    ? isPass == null
-                        ? null
-                        : ColorConstant.kSupportError2
-                    : ColorConstant.kSupportSuccess),
-            textAlign: TextAlign.start,
-            maxLines: 2,
+            style: WowTextTheme.ts14w600(context),
+            textAlign: TextAlign.center,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
         ),
+      );
+
+  DataCell _buildValueTableWidget(
+    BuildContext context, {
+    Color? bgColor,
+    ReportStandardResult? isPass,
+    required String value,
+    Function()? onTap,
+    double? width,
+  }) =>
+      DataCell(
+        Container(
+          width: width,
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          color: bgColor,
+          child: SizedBox.expand(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: WowTextTheme.ts14w400(context).copyWith(
+                    color: isPass != null
+                        ? isPass == ReportStandardResult.fail
+                            ? ColorConstant.kSupportError2
+                            : ColorConstant.kSupportSuccess
+                        : null),
+                textAlign: TextAlign.start,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+        onTap: onTap,
+      );
+
+  DataCell _buildPOStatusCellWidget(
+    BuildContext context, {
+    Color? bgColor,
+    ReportStandardResult? isPass,
+    required String value,
+    Function()? onTap,
+  }) =>
+      DataCell(
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          color: bgColor,
+          child: SizedBox.expand(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: WowTextTheme.ts14w400(context).copyWith(
+                    color: isPass == ReportStandardResult.fail
+                        ? ColorConstant.kSupportError2
+                        : ColorConstant.kSupportSuccess),
+                textAlign: TextAlign.start,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+        onTap: onTap,
       );
 }

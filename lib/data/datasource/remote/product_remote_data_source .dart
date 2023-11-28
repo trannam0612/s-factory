@@ -1,7 +1,9 @@
+import 'package:s_factory/data/datasource/remote/body/filter_list_all_production_order_body.dart';
 import 'package:s_factory/data/datasource/remote/body/production_order_report_body.dart';
 import 'package:s_factory/data/datasource/remote/services/product_service.dart';
 import 'package:s_factory/domain/entities/data_state.dart';
 import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
+import 'package:s_factory/domain/entities/product/list_all_production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
 
@@ -30,6 +32,14 @@ class ProductRemoteDataSource {
       POReportArgs body) async {
     final DataState<ProductionOrderReportEntity> response =
         await _productService.factoryProductionOrderReport(body);
+
+    return response;
+  }
+
+  Future<DataState<ListAllProductionOrderEntity>> factoryAllProductionOrders(
+      FilterListAllProductionOrderBody body) async {
+    final DataState<ListAllProductionOrderEntity> response =
+        await _productService.factoryAllProductionOrders(body);
 
     return response;
   }

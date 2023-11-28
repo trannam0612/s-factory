@@ -64,6 +64,8 @@ class Standard {
     this.standardId,
     this.sampleStandards,
     this.result,
+    this.ngCount,
+    this.note,
   });
 
   factory Standard.fromJson(Map<String, dynamic> json) =>
@@ -74,6 +76,10 @@ class Standard {
   final List<SampleStandard>? sampleStandards;
   @JsonKey(name: 'result')
   final String? result;
+  @JsonKey(name: 'ngCount')
+  final int? ngCount;
+  @JsonKey(name: 'note')
+  final String? note;
 
   Map<String, dynamic> toJson() => _$StandardToJson(this);
 }

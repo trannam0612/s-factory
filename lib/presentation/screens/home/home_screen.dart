@@ -85,6 +85,9 @@ class HomeScreen extends StatelessWidget {
                     getIt<NavigationService>().openDialog(
                       title: 'Lỗi',
                       content: state.message,
+                      onTap: () {
+                        getIt<NavigationService>().pop();
+                      },
                     );
                     break;
                   case LoadState.success:
@@ -112,6 +115,9 @@ class HomeScreen extends StatelessWidget {
                     getIt<NavigationService>().openDialog(
                       title: 'Lỗi',
                       content: state.message,
+                      onTap: () {
+                        getIt<NavigationService>().pop();
+                      },
                     );
                     break;
                   case LoadState.success:
@@ -148,9 +154,16 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              ButtonConfirmCheckReportWidget(
-                onTap: () {
-                  _homeBloc.add(ConfirmReportEvent());
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (BuildContext context, HomeState state) {
+                  if (state.listProductModel?.isNotEmpty == true) {
+                    return ButtonConfirmCheckReportWidget(
+                      onTap: () {
+                        _homeBloc.add(ConfirmReportEvent());
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
               ),
             ],

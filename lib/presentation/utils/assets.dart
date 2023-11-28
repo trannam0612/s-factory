@@ -17,6 +17,7 @@ class SvgPaths {
   static const String icUnselectRadio = 'assets/icons/ic_unselect_radio.svg';
   static const String icSelectedRadio = 'assets/icons/ic_selected_radio.svg';
   static const String icChevronRight = 'assets/icons/ic_chevron_right.svg';
+  static const String icChevronDown = 'assets/icons/ic_chevron_down.svg';
   static const String isSearch = 'assets/icons/ic_search.svg';
 
   static const String imgScanFrame = 'assets/icons/img_scan_frame.svg';
