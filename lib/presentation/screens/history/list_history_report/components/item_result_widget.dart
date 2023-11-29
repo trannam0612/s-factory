@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/extended_text_theme.dart';
-import 'package:s_factory/presentation/model/item_history_report_model.dart';
-import 'package:s_factory/presentation/screens/history/history_report/history_report_screen.dart';
+import 'package:s_factory/presentation/model/production_order_model.dart';
+import 'package:s_factory/presentation/screens/history/list_report_history_po/list_report_history_po_screen.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
@@ -14,13 +14,13 @@ class ItemResultWidget extends StatelessWidget {
     super.key,
     this.item,
   });
-  final ItemHistoryReportModel? item;
+  final ProductionOrderModel? item;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         getIt<NavigationService>().navigateToWithArgs(
-          routeName: HistoryReportScreen.pathRoute,
+          routeName: ListReportHistoryPOScreen.pathRoute,
           args: item,
         );
       },
@@ -39,15 +39,15 @@ class ItemResultWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              item?.po ?? '',
+              item?.poCode ?? '',
               style: WowTextTheme.ts16w600(context),
             ),
             Row(
               children: [
                 Text(
-                  item?.status ?? '',
+                  item?.status?.title ?? '',
                   style: WowTextTheme.ts16w600(context).copyWith(
-                    color: ColorConstant.kSupportSuccess,
+                    color: item?.status?.color,
                   ),
                 ),
                 SizedBox(

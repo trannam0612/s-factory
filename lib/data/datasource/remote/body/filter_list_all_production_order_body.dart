@@ -5,7 +5,7 @@ part 'filter_list_all_production_order_body.g.dart';
 @JsonSerializable()
 class FilterListAllProductionOrderBody {
   FilterListAllProductionOrderBody({
-    this.poIkeywordd,
+    this.poIkeyword,
     this.page,
     this.size,
   });
@@ -14,7 +14,7 @@ class FilterListAllProductionOrderBody {
           Map<String, dynamic> json) =>
       _$FilterListAllProductionOrderBodyFromJson(json);
   @JsonKey(name: 'keyword')
-  final String? poIkeywordd;
+  final String? poIkeyword;
   @JsonKey(name: 'page')
   final int? page;
   @JsonKey(name: 'size')

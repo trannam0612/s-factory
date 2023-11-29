@@ -12,15 +12,16 @@ class ListAllProductionOrderEntity {
   factory ListAllProductionOrderEntity.fromResponse(
       {ListAllProductionOrdersResponse? response}) {
     return ListAllProductionOrderEntity(
-        total: response?.total,
-        count: response?.count,
-        listProduction: response?.productionOrders
-            ?.map(
-              (ProductionOrderResponse e) => ProductionOrderEntity.fromResponse(
-                response: e,
-              ),
-            )
-            .toList());
+      total: response?.total,
+      count: response?.count,
+      listProduction: response?.productionOrders
+          ?.map(
+            (ProductionOrderResponse e) => ProductionOrderEntity.fromResponse(
+              response: e,
+            ),
+          )
+          .toList(),
+    );
   }
 
   int? total;

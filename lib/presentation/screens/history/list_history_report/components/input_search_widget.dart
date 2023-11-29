@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/extended_text_theme.dart';
-import 'package:s_factory/presentation/screens/scan/scan.dart';
-import 'package:s_factory/presentation/services/navigation_service.dart';
+import 'package:s_factory/presentation/screens/history/list_history_report/bloc/list_report_history_bloc.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_button_widget.dart';
 import 'package:s_factory/presentation/widgets/s_text_field_widget.dart';
 
-class InputSearchWidget extends StatelessWidget {
+class InputSearchWidget extends StatefulWidget {
   const InputSearchWidget({super.key});
+
+  @override
+  State<InputSearchWidget> createState() => _InputSearchWidgetState();
+}
+
+class _InputSearchWidgetState extends State<InputSearchWidget> {
+  late ListReportHistoryBloc _historyBloc;
+  late TextEditingController _txtKeyword;
+  @override
+  void initState() {
+    super.initState();
+    _historyBloc = context.read();
+    _txtKeyword = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +34,7 @@ class InputSearchWidget extends StatelessWidget {
           Expanded(
             child: STextFieldWidget(
               maxLength: 5,
+              controller: _txtKeyword,
               hintText: 'Tìm kiếm theo mã PO',
               iconPath: SvgPaths.isSearch,
               customBorder: OutlineInputBorder(
@@ -42,7 +56,8 @@ class InputSearchWidget extends StatelessWidget {
             text: 'Tìm kiếm',
             margin: EdgeInsets.zero,
             onClick: () {
-              getIt<NavigationService>().navigateTo(LoginScreen.pathRoute);
+              _historyBloc
+                  .add(GetListReportHistoryEvent(pOCode: _txtKeyword.text));
             },
             customBorderRadius: const BorderRadius.only(
               topRight: Radius.circular(

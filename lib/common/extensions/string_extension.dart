@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:s_factory/common/constant/core_constants.dart';
+import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
+import 'package:s_factory/presentation/utils/color_constant.dart';
 
 extension StringNullExtension on String? {
   bool isPhoneNumber() {
@@ -128,6 +131,50 @@ extension StringExtension on String {
   bool isOddNumber() {
     if (int.tryParse(this) == null) return false;
     return int.parse(this) % 2 != 0;
+  }
+}
+
+extension StringPOStatusExtension on String {
+  POStatus getPOStatus() {
+    if (this == POStatus.failed.value) {
+      return POStatus.failed;
+    } else if (this == POStatus.pass.value) {
+      return POStatus.pass;
+    } else if (this == POStatus.processing.value) {
+      return POStatus.processing;
+    } else {
+      return POStatus.unknow;
+    }
+  }
+
+  Color getColorPOStatus() {
+    if (this == POStatus.failed.value) {
+      return ColorConstant.kSupportError2;
+    } else if (this == POStatus.pass.value) {
+      return ColorConstant.kSupportSuccess;
+    } else if (this == POStatus.processing.value) {
+      return ColorConstant.kSupportWarning;
+    } else {
+      return ColorConstant.kTextColor;
+    }
+  }
+}
+
+extension StringReportStandardResultExtension on String {
+  ReportStandardResult getReportStandardResult() {
+    if (this == POStatus.failed.value) {
+      return ReportStandardResult.fail;
+    } else {
+      return ReportStandardResult.pass;
+    }
+  }
+
+  Color getColorReportStandardResult() {
+    if (this == ReportStandardResult.fail.value) {
+      return ColorConstant.kSupportError2;
+    } else {
+      return ColorConstant.kSupportSuccess;
+    }
   }
 }
 

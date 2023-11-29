@@ -1,23 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'filter_list_all_production_order_body.dart';
+part of 'filter_list_report_po_body.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-FilterListAllProductionOrderBody _$FilterListAllProductionOrderBodyFromJson(
-        Map<String, dynamic> json) =>
-    FilterListAllProductionOrderBody(
+POReportFilterBody _$POReportFilterBodyFromJson(Map<String, dynamic> json) =>
+    POReportFilterBody(
       poIkeyword: json['keyword'] as String?,
       page: json['page'] as int?,
       size: json['size'] as int?,
+      poId: json['poId'] as String?,
     );
 
-Map<String, dynamic> _$FilterListAllProductionOrderBodyToJson(
-        FilterListAllProductionOrderBody instance) =>
+Map<String, dynamic> _$POReportFilterBodyToJson(POReportFilterBody instance) =>
     <String, dynamic>{
       'keyword': instance.poIkeyword,
       'page': instance.page,
       'size': instance.size,
+      'poId': instance.poId,
     };

@@ -115,20 +115,72 @@ class ProductRequest {
   ''';
   static const String factoryAllProductionOrders = r'''
     query factoryAllProductionOrders($filter: ListPOFilter!){
-    factoryAllProductionOrders(id: $filter) {
-      total
-      count
-      productionOrders{
-        code
-        createdAt
-        deletedAt
-        endNo
+  factoryAllProductionOrders(filter: $filter) {
+    total
+    count
+    productionOrders{
+      code
+      id
+      poCode
+      status
+      uniqueCodes
+      productType {
+      id
+      code
+      name
+      unitCode
+      unitName
+      standardImageUrls
+      detailStandards {
         id
-        owner{
-          name
-        }
-        poCode
-        productType {
+        name
+        standard
+        description
+        tool
+        type
+        version
+        reviewType
+      }
+      overviewStandards {
+        id
+        name
+        standard
+        description
+        tool
+        type
+        version
+        reviewType
+      }
+    }
+    }
+  }
+}
+  ''';
+
+  static const String factoryPOReports = r'''
+    query factoryPOReports($filter: POReportFilter!){
+  factoryPOReports(filter: $filter) {
+    total
+    count
+    poReports{
+      id
+      status
+      stampType
+      code
+    }
+  }
+}
+  ''';
+  static const String factoryPOReportDetail = r'''
+    query factoryPOReportDetail($id: String!){
+  factoryPOReportDetail(id: $id) {
+    total
+    count
+    poReports{
+      id
+      status
+      stampType
+      productType {
         id
         code
         name
@@ -156,21 +208,8 @@ class ProductRequest {
           reviewType
         }
       }
-        productionAt
-        productionCount
-        reports{
-          code
-        }
-        serials{
-          uniqueCode
-          
-        }
-        stampType
-        startNo
-        status
-        uniqueCodes
-        updatedAt
     }
+  }
 }
   ''';
 }

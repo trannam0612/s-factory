@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:s_factory/presentation/model/item_history_report_model.dart';
 import 'package:s_factory/presentation/model/item_inpection_report_model%20.dart';
 import 'package:s_factory/presentation/model/production_order_model.dart';
 import 'package:s_factory/presentation/screens/auth/forgot_password/confirm_otp/confirm_otp_screen.dart';
 import 'package:s_factory/presentation/screens/auth/forgot_password/input_phone/input_phone_screen.dart';
 import 'package:s_factory/presentation/screens/auth/login/login_screen.dart';
-import 'package:s_factory/presentation/screens/history/history_report/history_report_screen.dart';
 import 'package:s_factory/presentation/screens/history/list_history_report/list_history_report_screen.dart';
+import 'package:s_factory/presentation/screens/history/list_report_history_po/list_report_history_po_screen.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/report_detail_screen.dart';
 import 'package:s_factory/presentation/screens/home/home_screen.dart';
 import 'package:s_factory/presentation/screens/report/report_screen.dart';
@@ -40,11 +39,11 @@ class ScreenDI {
     injector.registerFactory<Widget>(() => const ListHistoryReportScreen(),
         instanceName: ListHistoryReportScreen.pathRoute);
 
-    injector.registerFactoryParam<Widget, ItemHistoryReportModel, dynamic>(
-        (ItemHistoryReportModel param1, param2) => HistoryReportScreen(
-              item: param1,
+    injector.registerFactoryParam<Widget, ProductionOrderModel, dynamic>(
+        (ProductionOrderModel param1, param2) => ListReportHistoryPOScreen(
+              productionOrderModel: param1,
             ),
-        instanceName: HistoryReportScreen.pathRoute);
+        instanceName: ListReportHistoryPOScreen.pathRoute);
 
     injector.registerFactoryParam<Widget, ItemInpectionReportModel, dynamic>(
         (ItemInpectionReportModel param1, param2) => ReportDetailScreen(

@@ -31,3 +31,29 @@ Map<String, dynamic> _$StandardProductResponseToJson(
       'version': instance.version,
       'reviewType': instance.reviewType,
     };
+
+SampleStandardResponse _$SampleStandardResponseFromJson(
+        Map<String, dynamic> json) =>
+    SampleStandardResponse(
+      id: json['id'] as String?,
+      name: json['name'] as String?,
+      standard: json['standard'] as String?,
+      description: json['description'] as String?,
+      tool: json['tool'] as String?,
+      type: json['type'] as String?,
+      version: json['version'] as String?,
+      reviewType: json['reviewType'] as String?,
+    );
+
+Map<String, dynamic> _$SampleStandardResponseToJson(
+        SampleStandardResponse instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'standard': instance.standard,
+      'description': instance.description,
+      'tool': instance.tool,
+      'type': instance.type,
+      'version': instance.version,
+      'reviewType': instance.reviewType,
+    };

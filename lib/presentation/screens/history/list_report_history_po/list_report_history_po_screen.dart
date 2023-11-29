@@ -6,39 +6,40 @@ import 'package:s_factory/common/constant/enum.dart';
 import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/presentation/app/app_bloc.dart';
 import 'package:s_factory/presentation/app/app_event.dart';
-import 'package:s_factory/presentation/screens/history/list_history_report/bloc/list_report_history_bloc.dart';
-import 'package:s_factory/presentation/screens/history/list_history_report/components/input_search_widget.dart';
-import 'package:s_factory/presentation/screens/history/list_history_report/components/list_result_report_widget.dart';
+import 'package:s_factory/presentation/model/production_order_model.dart';
+import 'package:s_factory/presentation/screens/history/list_report_history_po/bloc/list_report_history_po_bloc.dart';
+import 'package:s_factory/presentation/screens/history/list_report_history_po/components/info_overview_report_history_po_widget.dart';
+import 'package:s_factory/presentation/screens/history/list_report_history_po/components/list_report_history_po_widget.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_appbar_widget.dart';
-import 'package:s_factory/presentation/widgets/s_back_button_widget%20.dart';
 import 'package:s_factory/presentation/widgets/s_cricel_avatar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_scaffold_widget.dart';
 
-class ListHistoryReportScreen extends StatefulWidget {
-  const ListHistoryReportScreen({super.key});
-  static const String pathRoute = 'listHistoryReportRoute';
+class ListReportHistoryPOScreen extends StatefulWidget {
+  ListReportHistoryPOScreen({
+    super.key,
+    required this.productionOrderModel,
+  });
+  static const String pathRoute = 'historyReportRoute';
+
+  final ProductionOrderModel productionOrderModel;
 
   @override
-  State<ListHistoryReportScreen> createState() =>
-      _ListHistoryReportScreenState();
+  State<ListReportHistoryPOScreen> createState() =>
+      _ListReportHistoryPOScreenState();
 }
 
-class _ListHistoryReportScreenState extends State<ListHistoryReportScreen> {
-  late ListReportHistoryBloc _historyBloc;
-
+class _ListReportHistoryPOScreenState extends State<ListReportHistoryPOScreen> {
+  late ListReportHistoryPOBloc _listReportHistoryPOBloc;
   @override
   void initState() {
     super.initState();
-    _historyBloc = getIt();
-    _historyBloc.add(GetListReportHistoryEvent());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    _listReportHistoryPOBloc = getIt();
+    _listReportHistoryPOBloc.add(GetListReportHistoryPOEvent(
+      poId: widget.productionOrderModel.id,
+    ));
   }
 
   @override
@@ -81,11 +82,11 @@ class _ListHistoryReportScreenState extends State<ListHistoryReportScreen> {
           )
         ],
       ),
-      body: BlocProvider<ListReportHistoryBloc>(
-        create: (BuildContext context) => _historyBloc,
-        child: BlocListener<ListReportHistoryBloc, ListReportHistoryState>(
-          listener: (BuildContext context, ListReportHistoryState state) {
-            switch (state.getListReportHistoryState) {
+      body: BlocProvider<ListReportHistoryPOBloc>(
+        create: (BuildContext context) => _listReportHistoryPOBloc,
+        child: BlocListener<ListReportHistoryPOBloc, ListReportHistoryPOState>(
+          listener: (BuildContext context, ListReportHistoryPOState state) {
+            switch (state.getListReportHistoryPOState) {
               case LoadState.loading:
                 if (state.listReport?.isEmpty == true) {
                   context.read<AppBloc>().add(OnShowLoadingEvent());
@@ -110,23 +111,15 @@ class _ListHistoryReportScreenState extends State<ListHistoryReportScreen> {
             }
           },
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                color: ColorConstant.kSupportInfo,
-                padding: EdgeInsets.symmetric(vertical: 36.h, horizontal: 16.w),
-                child: Column(
-                  children: <Widget>[
-                    const SBackButtonWidget(
-                      title: 'Lịch sử báo cáo',
-                    ),
-                    SizedBox(
-                      height: 24.h,
-                    ),
-                    const InputSearchWidget()
-                  ],
-                ),
+              InfoOverviewReportHistoryPOWidget(
+                item: widget.productionOrderModel,
               ),
-              Expanded(child: ListResultReportWidget())
+              SizedBox(
+                height: 32.h,
+              ),
+              Expanded(child: ListReportHistoryPOWidget())
             ],
           ),
         ),

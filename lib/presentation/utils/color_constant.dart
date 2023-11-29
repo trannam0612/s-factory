@@ -21,6 +21,7 @@ class ColorConstant {
   static const Color kSupportError = Color(0xFFFFF5F3);
   static const Color kSupportError2 = Color(0xFFEB5454);
   static const Color kSupportInfo = Color(0xFFF5F9FF);
+  static const Color kSupportWarning = Color(0xFFFFB038);
 
   static const Color kNeuTral02 = Color(0xFFF2F2F2);
   static const Color kNeuTral03 = Color(0xFFA0A5A9);

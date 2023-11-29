@@ -1,59 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s_factory/presentation/model/item_history_report_model.dart';
+import 'package:s_factory/common/constant/enum.dart';
+import 'package:s_factory/presentation/model/production_order_model.dart';
+import 'package:s_factory/presentation/screens/history/list_history_report/bloc/list_report_history_bloc.dart';
 import 'package:s_factory/presentation/screens/history/list_history_report/components/item_result_widget.dart';
+import 'package:s_factory/presentation/widgets/s_smart_listview_widget.dart';
 
 class ListResultReportWidget extends StatelessWidget {
-  ListResultReportWidget({super.key});
-  final List<ItemHistoryReportModel> listItem = [
-    ItemHistoryReportModel(
-      po: 'PO-12313213213213213213213',
-      name: '3004010330- Bộ dây điện VĐT KAD-N69 v2 (PC)',
-      lot: '3000',
-      status: 'PASS',
-    ),
-    ItemHistoryReportModel(
-      po: 'PO-22222222',
-      status: 'FAIL',
-      name: '11111- Bộ  ống nước 1000',
-      lot: '2222',
-    ),
-    ItemHistoryReportModel(
-      po: 'PO-888888',
-      status: 'PENDING',
-      name: '3004010330- Bộ Quần áo bảo hộ',
-      lot: '111',
-    ),
-    ItemHistoryReportModel(
-      po: 'PO-1123111',
-      status: 'PASS',
-      name:
-          '3004010330- Tên sản phẩm rât dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài dài',
-      lot: '44',
-    ),
-    ItemHistoryReportModel(
-      po: 'PO-1',
-      status: 'PASS',
-      name: '3004010330- oke',
-      lot: '111112',
-    ),
-  ];
+  const ListResultReportWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.symmetric(
-        horizontal: 145.w,
-        vertical: 24.h,
-      ),
-      shrinkWrap: true,
-      separatorBuilder: (BuildContext context, int index) => const SizedBox(
-        height: 4,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return ItemResultWidget(item: listItem[index]);
+    final ListReportHistoryBloc _historyBloc = context.read();
+    return BlocConsumer<ListReportHistoryBloc, ListReportHistoryState>(
+      builder: (BuildContext context, ListReportHistoryState state) {
+        final List<ProductionOrderModel> listReportHistory =
+            state.listReport ?? <ProductionOrderModel>[];
+
+        return SSmartListViewWidget<ProductionOrderModel>(
+          padding: EdgeInsets.symmetric(
+            horizontal: 145.w,
+            vertical: 24.h,
+          ),
+          isShowLoading: state.getListReportHistoryState == LoadState.loading,
+          items: listReportHistory,
+          itemBuilder: (BuildContext p0, ProductionOrderModel data) =>
+              ItemResultWidget(item: data),
+          separatorBuilder: const SizedBox(
+            height: 4,
+          ),
+          onLoadMore: () {
+            _historyBloc.add(const LoadmoreListReportHistoryEvent());
+          },
+          onRefresh: () {
+            _historyBloc
+                .add(const LoadmoreListReportHistoryEvent(isRefresh: true));
+          },
+        );
       },
-      itemCount: listItem.length,
+      listener: (BuildContext context, ListReportHistoryState state) {},
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:s_factory/data/datasource/remote/body/filter_list_all_production_order_body.dart';
+import 'package:s_factory/data/datasource/remote/body/filter_list_report_po_body.dart';
 import 'package:s_factory/data/datasource/remote/body/production_order_report_body.dart';
 import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
 import 'package:s_factory/domain/entities/product/list_all_production_order_entity.dart';
+import 'package:s_factory/domain/entities/product/list_report_history_po_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
 import 'package:s_factory/domain/repository/product_repository.dart';
@@ -49,6 +51,26 @@ class ProductUseCase {
     DataState<ListAllProductionOrderEntity> entity =
         await _productRepository.factoryAllProductionOrders(
       body,
+    );
+    return entity;
+  }
+
+  Future<DataState<ListReportHistoryPOEntity>> factoryPOReports(
+    POReportFilterBody body,
+  ) async {
+    DataState<ListReportHistoryPOEntity> entity =
+        await _productRepository.factoryPOReports(
+      body,
+    );
+    return entity;
+  }
+
+  Future<DataState<CheckSerialEntity>> factoryPOReportDetail(
+    String id,
+  ) async {
+    DataState<CheckSerialEntity> entity =
+        await _productRepository.factoryPOReportDetail(
+      id,
     );
     return entity;
   }

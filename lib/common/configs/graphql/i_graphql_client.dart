@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:graphql/client.dart';
 import 'package:s_factory/data/datasource/remote/responses/test_base_response.dart';
 
 abstract class IGraphQLClient {

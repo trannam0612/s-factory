@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,30 +13,59 @@ import 'package:s_factory/domain/use_case/product_use_case.dart';
 import 'package:s_factory/presentation/data/product_report_data.dart';
 import 'package:s_factory/presentation/model/production_order_model.dart';
 import 'package:s_factory/presentation/model/standard_product_model.dart';
+import 'package:s_factory/presentation/utils/color_constant.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';
 
 enum POStatus {
-  failed(value: 'failed', title: 'Failed'),
-  pass(value: 'pass', title: 'Pass'),
-  processing(value: 'processing', title: 'Processing'),
-  unknow(value: 'unknow', title: 'Unknow');
+  failed(
+    value: 'failed',
+    title: 'Failed',
+    color: ColorConstant.kSupportError2,
+  ),
+  pass(
+    value: 'pass',
+    title: 'Pass',
+    color: ColorConstant.kSupportSuccess,
+  ),
+  processing(
+    value: 'processing',
+    title: 'Processing',
+    color: ColorConstant.kSupportWarning,
+  ),
+  unknow(
+    value: 'unknow',
+    title: 'Unknow',
+    color: ColorConstant.kTextColor,
+  );
 
   const POStatus({
     this.value,
     this.title,
+    this.color,
   });
   final String? value;
   final String? title;
+  final Color? color;
 }
 
 enum ReportStandardResult {
-  fail(value: 'Fail'),
-  pass(value: 'Pass'),
+  fail(
+    value: 'Fail',
+    color: ColorConstant.kSupportError2,
+  ),
+  pass(
+    value: 'Pass',
+    color: ColorConstant.kSupportSuccess,
+  ),
   unknow(value: '');
 
-  const ReportStandardResult({this.value});
+  const ReportStandardResult({
+    this.value,
+    this.color,
+  });
+  final Color? color;
   final String? value;
 }
 

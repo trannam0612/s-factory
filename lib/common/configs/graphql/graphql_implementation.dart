@@ -52,49 +52,49 @@ class GraphQLImplementation<T> implements IGraphQLClient {
       cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
     );
     DataResponse<T>? result;
-    try {
-      logi(
-          message:
-              '-----------------QUERY GRAPHQL API REQUEST------------------');
-      logi(message: 'DOCUMENTS:\n$doc');
-      logi(message: 'VARIABLES:\n$vars');
+    // try {
+    logi(
+        message:
+            '-----------------QUERY GRAPHQL API REQUEST------------------');
+    logi(message: 'DOCUMENTS:\n$doc');
+    logi(message: 'VARIABLES:\n$vars');
 
-      final QueryResult<Object?> response = await _client.query(options);
+    final QueryResult<Object?> response = await _client.query(options);
 
-      logi(
-          message:
-              '-----------------QUERY GRAPHQL API RESPONSE------------------');
-      logi(message: 'DATA:\n${response.toString()}');
+    logi(
+        message:
+            '-----------------QUERY GRAPHQL API RESPONSE------------------');
+    logi(message: 'DATA:\n${response.toString()}');
 
-      //
-      // if (response.hasException || response.exception != null) {
-      //   final Iterable<String>? errors = response.exception?.graphqlErrors
-      //       .map((GraphQLError e) => e.message);
-      //   // result = DataResponse<T>?;
-      //   result?.message = errors?.first;
-      //   logi(message: 'result?.message${result?.message}');
-      //   result?.code = NetworkStatusCode.badRequest;
-      //   logi(message: 'result?.code${result?.code}');
+    //
+    // if (response.hasException || response.exception != null) {
+    //   final Iterable<String>? errors = response.exception?.graphqlErrors
+    //       .map((GraphQLError e) => e.message);
+    //   // result = DataResponse<T>?;
+    //   result?.message = errors?.first;
+    //   logi(message: 'result?.message${result?.message}');
+    //   result?.code = NetworkStatusCode.badRequest;
+    //   logi(message: 'result?.code${result?.code}');
 
-      //   return result;
-      // }
+    //   return result;
+    // }
 
-      //
-      result = DataResponse<T>.fromGraphQLReq(response, tag);
-      if (response.hasException || response.exception != null) {
-        result.code = NetworkStatusCode.newsError;
-      } else {
-        result.code = NetworkStatusCode.success;
-      }
-    } catch (e) {
-      loge(message: 'ERROR:\n${e.toString()}');
-      if (e is OperationException) {
-        final List<String> errors =
-            e.graphqlErrors.map((GraphQLError e) => e.message).toList();
-        result?.message = errors.first;
-        result?.code = NetworkStatusCode.badRequest;
-      }
+    //
+    result = DataResponse<T>.fromGraphQLReq(response, tag);
+    if (response.hasException || response.exception != null) {
+      result.code = NetworkStatusCode.newsError;
+    } else {
+      result.code = NetworkStatusCode.success;
     }
+    // } catch (e) {
+    //   loge(message: 'ERROR:\n${e.toString()}');
+    //   if (e is OperationException) {
+    //     final List<String> errors =
+    //         e.graphqlErrors.map((GraphQLError e) => e.message).toList();
+    //     result?.message = errors.first;
+    //     result?.code = NetworkStatusCode.badRequest;
+    //   }
+    // }
     return result;
   }
 

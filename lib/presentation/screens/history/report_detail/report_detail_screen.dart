@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/presentation/model/item_inpection_report_model%20.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/bloc/report_detail_bloc.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/detail_report_info_widget.dart';
-import 'package:s_factory/presentation/screens/history/report_detail/components/info_basic_report_widget.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/components/info_basic_detail_report_widget.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/info_detail_report_widget.dart';
-import 'package:s_factory/presentation/screens/history/report_detail/components/technical_drawing_report_widget.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/components/technical_drawing_detail_report_widget.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_appbar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_cricel_avatar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_scaffold_widget.dart';
 
-class ReportDetailScreen extends StatelessWidget {
+class ReportDetailScreen extends StatefulWidget {
   const ReportDetailScreen({
     super.key,
     required this.item,
@@ -20,6 +23,19 @@ class ReportDetailScreen extends StatelessWidget {
   static const String pathRoute = 'reportDetailRoute';
 
   final ItemInpectionReportModel item;
+
+  @override
+  State<ReportDetailScreen> createState() => _ReportDetailScreenState();
+}
+
+class _ReportDetailScreenState extends State<ReportDetailScreen> {
+  late ReportDetailBloc _reportDetailBloc;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _reportDetailBloc = getIt();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,31 +76,34 @@ class ReportDetailScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          children: <Widget>[
-            InfoBasicReportWidget(
-              item: item,
-            ),
-            SizedBox(
-              height: 24.h,
-            ),
-            InfoDetailReportWidget(
-              item: item,
-            ),
-            SizedBox(
-              height: 32.h,
-            ),
-            const TechnicalDrawingReportWidget(),
-            SizedBox(
-              height: 32.h,
-            ),
-            DetailReportInfoWidget(),
-            SizedBox(
-              height: 32.h,
-            ),
-          ],
+      body: BlocProvider<ReportDetailBloc>(
+        create: (context) => _reportDetailBloc,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            children: <Widget>[
+              InfoBasicReportWidget(
+                item: widget.item,
+              ),
+              SizedBox(
+                height: 24.h,
+              ),
+              InfoDetailReportWidget(
+                item: widget.item,
+              ),
+              SizedBox(
+                height: 32.h,
+              ),
+              const TechnicalDrawingReportWidget(),
+              SizedBox(
+                height: 32.h,
+              ),
+              DetailReportInfoWidget(),
+              SizedBox(
+                height: 32.h,
+              ),
+            ],
+          ),
         ),
       ),
     );

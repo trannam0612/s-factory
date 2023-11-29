@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/extended_text_theme.dart';
-import 'package:s_factory/presentation/model/item_history_report_model.dart';
+import 'package:s_factory/presentation/model/production_order_model.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_back_button_widget%20.dart';
 
-class InfoOverviewHistoryReportWidget extends StatelessWidget {
-  const InfoOverviewHistoryReportWidget({
+class InfoOverviewReportHistoryPOWidget extends StatelessWidget {
+  const InfoOverviewReportHistoryPOWidget({
     super.key,
     required this.item,
   });
 
-  final ItemHistoryReportModel item;
+  final ProductionOrderModel item;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class InfoOverviewHistoryReportWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SBackButtonWidget(
-            title: item.po,
+            title: item.poCode,
           ),
           SizedBox(
             height: 24.h,
@@ -35,7 +35,7 @@ class InfoOverviewHistoryReportWidget extends StatelessWidget {
                 _buildTitleInfoWidget(
                   context,
                   title: 'Tên sản phẩm',
-                  value: item.name,
+                  value: item.nameAndCode,
                 ),
                 SizedBox(
                   height: 4.h,
@@ -43,7 +43,7 @@ class InfoOverviewHistoryReportWidget extends StatelessWidget {
                 _buildTitleInfoWidget(
                   context,
                   title: 'Lot',
-                  value: item.lot,
+                  value: item.uniqueCodes?.length.toString(),
                 ),
                 SizedBox(
                   height: 4.h,
@@ -51,8 +51,8 @@ class InfoOverviewHistoryReportWidget extends StatelessWidget {
                 _buildTitleInfoWidget(
                   context,
                   title: 'Trạng thái',
-                  value: item.status,
-                  colorValue: ColorConstant.kSupportSuccess,
+                  value: item.status?.title,
+                  colorValue: item.status?.color,
                 ),
               ],
             ),

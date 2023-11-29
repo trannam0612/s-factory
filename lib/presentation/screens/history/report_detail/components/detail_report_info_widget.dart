@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/extended_text_theme.dart';
-import 'package:s_factory/presentation/screens/history/report_detail/components/detail_table_report_detail_widget.dart';
-import 'package:s_factory/presentation/screens/history/report_detail/components/detail_table_report_overview_widget.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/components/table_detail_report_detail_widget.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/components/table_detail_report_overview_widget.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 
 class DetailReportInfoWidget extends StatefulWidget {
