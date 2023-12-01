@@ -16,7 +16,7 @@ class TechnicalDrawingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: productionOrder?.urlImage ?? '',
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       width: double.infinity,
       height: 500.h,
       placeholder: (BuildContext context, String url) {

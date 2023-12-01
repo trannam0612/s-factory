@@ -102,17 +102,21 @@ class _TableDetailReportDetailWidgetState
         ...List<DataCell>.generate(
           listStandardValue.length,
           (int index) {
+            late String? newValue;
             final String? note = listStandardValue[index].note;
-            final String value =
-                (listStandardValue[index].value ?? 0).toString();
+            final num? value = listStandardValue[index].value;
             final ReportStandardResult? result =
                 listStandardValue[index].result;
 
-            final String? newValue = value.isNotEmpty == true
-                ? value == '0'
-                    ? result?.value
-                    : value
-                : result?.value;
+            if (value != null) {
+              newValue = value.toString();
+            } else {
+              if (result != null) {
+                newValue = result.value;
+              } else {
+                newValue = '';
+              }
+            }
             return _buildValueTableWidget(
               context,
               isPass: listStandardValue[index].result,
@@ -168,8 +172,13 @@ class _TableDetailReportDetailWidgetState
           triggerMode: TooltipTriggerMode.tap,
           enableFeedback: false,
           message: note ?? '',
+          padding: EdgeInsets.all(18.w),
+          decoration: BoxDecoration(
+              color: ColorConstant.kPrimary02,
+              borderRadius: BorderRadius.circular(8.w)),
+          textStyle: WowTextTheme.ts14w600(context).copyWith(),
           child: Container(
-            foregroundDecoration: note != null
+            foregroundDecoration: note != null && note.isNotEmpty == true
                 ? const BadgeDecoration(
                     badgeColor: ColorConstant.kSupportWarning,
                     badgeSize: 15,

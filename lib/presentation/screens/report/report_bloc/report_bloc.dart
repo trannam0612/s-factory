@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
 import 'package:s_factory/common/constant/enum.dart';
@@ -123,7 +124,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         for (String element in listSerial) {
           listValue.add(StandardValueData(
             serial: element,
-            result: ReportStandardResult.pass,
+            // result: ReportStandardResult.pass,
           ));
         }
         listProductOverView[i] =
@@ -134,7 +135,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         for (String element in listSerial) {
           listValue.add(StandardValueData(
             serial: element,
-            result: ReportStandardResult.pass,
+            // result: ReportStandardResult.pass,
           ));
         }
         listProductDetail[i] =
@@ -178,7 +179,9 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
             if (standardId == productItem.id) {
               if (serial == listStandardValue[j].serial) {
                 listStandardValue[j] = listStandardValue[j].copyWith(
-                  value: double.parse(value ?? '0'),
+                  value: value != '' && value?.isNotEmpty == true
+                      ? double.parse(value ?? '0')
+                      : null,
                   result: result,
                   note: note,
                 );
@@ -195,6 +198,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       ));
     } catch (e) {
       emit(state.copyWith(
+        message: e.toString(),
         getDataListProductState: LoadState.failure,
         updateDataDetailState: LoadState.failure,
       ));
@@ -303,29 +307,48 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       final String? poId = event.productionOrder?.id;
 
       POReportArgs body = POReportArgs();
-      final List<Standard>? listAllStandard = <Standard>[];
+      final List<Standard> listAllStandard = <Standard>[];
 
       // add report detail to list
       //Chi tieets
 
-      List<Standard>? standardsDetail = state.listProductDetail
-          ?.map(
-            (StandardProductReportData e) => Standard(
-                standardId: e.id,
-                result: e.result?.value,
-                ngCount: int.parse(e.ngCount ?? '0'),
-                sampleStandards: e.listStandardValue
-                    ?.map((StandardValueData e) => SampleStandard(
-                          serial: e.serial,
-                          result: e.result?.value,
-                          value: e.value,
-                          note: e.note,
-                        ))
-                    .toList()),
-          )
-          .toList();
+      List<Standard>? standardsDetail = state.listProductDetail?.map(
+        (StandardProductReportData e) {
+          List<SampleStandard>? sampleStandards = [];
+          //     e.listStandardValue?.map((StandardValueData e) {
+          //   if (e.value != null || e.result != null) {
+          //     return SampleStandard(
+          //       serial: e.serial,
+          //       result: e.result?.value,
+          //       value: e.value,
+          //       note: e.note,
+          //     );
+          //   }
+          // }).toList();
+
+          for (StandardValueData element
+              in e.listStandardValue ?? <StandardValueData>[]) {
+            if (element.value != null || element.result != null) {
+              final double? value = element.value;
+              logi(message: 'value:${value}');
+              sampleStandards.add(SampleStandard(
+                serial: element.serial,
+                result: element.result?.value,
+                value: value,
+                note: element.note,
+              ));
+            }
+          }
+
+          return Standard(
+              standardId: e.id,
+              result: e.result?.value,
+              ngCount: int.parse(e.ngCount ?? '0'),
+              sampleStandards: sampleStandards);
+        },
+      ).toList();
       if (standardsDetail?.isNotEmpty == true && standardsDetail != null) {
-        listAllStandard?.addAll(standardsDetail);
+        listAllStandard.addAll(standardsDetail);
       }
       // Tổng quan
       List<Standard>? standardsOverview = state.listProductOverView
@@ -333,7 +356,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
             (StandardProductReportData e) => Standard(
               standardId: e.id,
               result: e.result?.value,
-              ngCount: int.parse(e.ngCount ?? '0'),
+              ngCount: int.tryParse(e.ngCount ?? '') ?? 0,
               note: e.note,
               sampleStandards: <SampleStandard>[],
             ),
@@ -341,7 +364,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           .toList();
 
       if (standardsOverview?.isNotEmpty == true && standardsOverview != null) {
-        listAllStandard?.addAll(standardsOverview);
+        listAllStandard.addAll(standardsOverview);
       }
 
       body = body.copyWith(

@@ -119,8 +119,6 @@ class ProductRequest {
     total
     count
     productionOrders{
-      code
-      id
       poCode
       status
       uniqueCodes
@@ -130,27 +128,6 @@ class ProductRequest {
       name
       unitCode
       unitName
-      standardImageUrls
-      detailStandards {
-        id
-        name
-        standard
-        description
-        tool
-        type
-        version
-        reviewType
-      }
-      overviewStandards {
-        id
-        name
-        standard
-        description
-        tool
-        type
-        version
-        reviewType
-      }
     }
     }
   }
@@ -192,6 +169,7 @@ class ProductRequest {
     sampleSerials
     productType{
       name
+      standardImageUrls
     }
     owner{
       fullname

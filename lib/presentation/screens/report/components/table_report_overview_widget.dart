@@ -133,7 +133,7 @@ class _TableReportOverviewWidgetState extends State<TableReportOverviewWidget> {
             getIt<NavigationService>().openBottomSheet(
                 widget: BSEditOverviewProductWidget(
               note: data.note ?? '',
-              currentStatus: data.result ?? ReportStandardResult.pass,
+              currentStatus: data.result,
               onTapConfirm:
                   (String? ngCount, String? note, ReportStandardResult? p0) {
                 _reportBloc.add(UpdateValueProductOverViewEvent(
@@ -143,7 +143,7 @@ class _TableReportOverviewWidgetState extends State<TableReportOverviewWidget> {
                   ngCount: ngCount,
                 ));
               },
-              ngCount: data.ngCount ?? '0',
+              ngCount: data.ngCount ?? '',
             ));
           },
         ),

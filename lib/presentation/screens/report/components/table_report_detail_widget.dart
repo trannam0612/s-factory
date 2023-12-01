@@ -85,7 +85,7 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
                 ...List<DataColumn>.generate(widget.listSerial?.length ?? 0,
                     ((int index) {
                   return _buildTitleTableWidget(context,
-                      value: 'M-${index + 1}');
+                      value: '${widget.listSerial?[index]}');
                 })),
                 _buildTitleTableWidget(context, value: 'Kết quả'),
                 _buildTitleTableWidget(context, value: 'Công cụ đo'),
@@ -130,16 +130,21 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
         ...List<DataCell>.generate(
           listStandardValue.length,
           (int index) {
-            final String value =
-                (listStandardValue[index].value ?? 0).toString();
+            late String? newValue;
+
+            final double? value = listStandardValue[index].value;
             final ReportStandardResult? result =
                 listStandardValue[index].result;
+            if (value != null && value != 0) {
+              newValue = value.toString();
+            } else {
+              if (result != null) {
+                newValue = result.value;
+              } else {
+                newValue = '';
+              }
+            }
 
-            final String? newValue = value.isNotEmpty == true
-                ? value
-                : value != '0.0' || value != '0'
-                    ? value
-                    : result?.value;
             return _buildValueTableWidget(
               context,
               isPass: listStandardValue[index].result,
@@ -149,10 +154,9 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
               onTap: () {
                 getIt<NavigationService>().openBottomSheet(
                   widget: InputEditValueWidget(
-                    value: (listStandardValue[index].value ?? 0.0).toString(),
-                    result: listStandardValue[index].result ??
-                        ReportStandardResult.pass,
-                    note: listStandardValue[index].note ?? null,
+                    value: value != null ? value.toString() : '',
+                    result: result ?? ReportStandardResult.pass,
+                    note: listStandardValue[index].note,
                     onTapConfirm: (
                       String? p0,
                       ReportStandardResult? result,
@@ -230,6 +234,11 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
           triggerMode: TooltipTriggerMode.longPress,
           enableFeedback: false,
           message: note ?? '',
+          padding: EdgeInsets.all(18.w),
+          decoration: BoxDecoration(
+              color: ColorConstant.kPrimary02,
+              borderRadius: BorderRadius.circular(8.w)),
+          textStyle: WowTextTheme.ts14w600(context).copyWith(),
           child: Container(
             foregroundDecoration: note?.isNotNullOrEmpty == true
                 ? const BadgeDecoration(

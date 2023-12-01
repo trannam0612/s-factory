@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
 import 'package:s_factory/common/di/app_injector.dart';
-import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
@@ -12,28 +11,39 @@ import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_title_text_field_widget.dart';
 
-class InputEditValueWidget extends StatelessWidget {
+class InputEditValueWidget extends StatefulWidget {
   const InputEditValueWidget({
     super.key,
     required this.value,
-    required this.result,
+    this.result,
     this.note,
     this.onTapConfirm,
   });
   final String value;
   final String? note;
-  final ReportStandardResult result;
+  final ReportStandardResult? result;
   final Function(String?, ReportStandardResult?, String?)? onTapConfirm;
 
   @override
+  State<InputEditValueWidget> createState() => _InputEditValueWidgetState();
+}
+
+class _InputEditValueWidgetState extends State<InputEditValueWidget> {
+  late TextEditingController txtValue;
+  late TextEditingController txtNote;
+
+  late ValueNotifier<ReportStandardResult?> isPass;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    txtValue = TextEditingController(text: widget.value.toString());
+    txtNote = TextEditingController(text: widget.note);
+    isPass = ValueNotifier<ReportStandardResult?>(widget.result);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController txtValue =
-        TextEditingController(text: value.toString());
-    final TextEditingController txtNote = TextEditingController(text: note);
-
-    final ValueNotifier<ReportStandardResult?> isPass =
-        ValueNotifier<ReportStandardResult?>(result);
-
     return Container(
       width: double.infinity,
       padding:
@@ -57,19 +67,22 @@ class InputEditValueWidget extends StatelessWidget {
                 onTap: () {
                   logi(message: 'onTapConfirm:${txtValue.text}');
                   logi(message: 'txtNote:${txtNote.text.isEmpty}');
-                  onTapConfirm?.call(txtValue.text, isPass.value, txtNote.text);
+                  widget.onTapConfirm
+                      ?.call(txtValue.text, isPass.value, txtNote.text);
                 },
               ),
             ],
           ),
           Container(
-            padding: EdgeInsets.symmetric(
-              vertical: 30.h,
-              horizontal: 16.w,
+            padding: EdgeInsets.only(
+              top: 30.h,
+              left: 16.w,
+              right: 16.w,
             ),
             width: double.infinity,
             color: ColorConstant.kWhite,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   children: <Widget>[
@@ -117,7 +130,6 @@ class InputEditValueWidget extends StatelessWidget {
                                     context,
                                     isSelected:
                                         valuePass == ReportStandardResult.pass,
-                                    isHasValue: txtValue.text.isNotNullOrEmpty,
                                     buttonType: ReportStandardResult.pass,
                                     onTap: () {
                                       logi(message: 'true');
@@ -133,7 +145,6 @@ class InputEditValueWidget extends StatelessWidget {
                                     context,
                                     isSelected:
                                         valuePass == ReportStandardResult.fail,
-                                    isHasValue: txtValue.text.isNotNullOrEmpty,
                                     buttonType: ReportStandardResult.fail,
                                     onTap: () {
                                       logi(message: 'fail:$valuePass');
@@ -168,8 +179,7 @@ class InputEditValueWidget extends StatelessWidget {
   }
 
   Widget _buildOptionSelectReportWidget(BuildContext context,
-      {bool? isHasValue,
-      bool? isSelected,
+      {bool? isSelected,
       Function()? onTap,
       required ReportStandardResult buttonType}) {
     final String title =
@@ -182,18 +192,12 @@ class InputEditValueWidget extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-            color: isHasValue == true
-                ? ColorConstant.kWhite
-                : isSelected == true
-                    ? color.withOpacity(0.2)
-                    : ColorConstant.kWhite,
+            color: isSelected == true
+                ? color.withOpacity(0.2)
+                : ColorConstant.kWhite,
             borderRadius: BorderRadius.circular(4.w),
             border: Border.all(
-              color: isHasValue == true
-                  ? ColorConstant.kNeuTral02
-                  : isSelected == true
-                      ? color
-                      : ColorConstant.kNeuTral02,
+              color: isSelected == true ? color : ColorConstant.kNeuTral02,
             )),
         child: Row(
           children: <Widget>[

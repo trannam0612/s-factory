@@ -13,10 +13,13 @@ class TechnicalDrawingReportWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReportDetailBloc, ReportDetailState>(
         builder: (BuildContext context, ReportDetailState state) {
-      final String url = state.reportDetailModel?.id ?? '';
+      final List<String>? listUrl =
+          state.reportDetailModel?.productType?.standardImageUrls;
+      final String url =
+          listUrl?.isNotEmpty == true ? listUrl?.first ?? '' : '';
       return CachedNetworkImage(
         imageUrl: url,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         width: double.infinity,
         height: 500.h,
         placeholder: (BuildContext context, String url) {

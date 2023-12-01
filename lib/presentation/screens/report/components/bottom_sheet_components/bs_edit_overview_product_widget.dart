@@ -57,8 +57,9 @@ class _BSEditOverviewProductWidgetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         // alignment: Alignment.centerRight,
@@ -88,10 +89,7 @@ class _BSEditOverviewProductWidgetState
           ),
           Container(
             // height: 200.h,
-            padding: EdgeInsets.symmetric(
-              vertical: 30.h,
-              horizontal: 16.w,
-            ),
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 30.h),
             width: double.infinity,
             color: ColorConstant.kWhite,
             child: Column(
@@ -175,6 +173,9 @@ class _BSEditOverviewProductWidgetState
                       ),
                     )
                   ],
+                ),
+                SizedBox(
+                  height: 8.h,
                 ),
                 WowTitleTextFieldWidget(
                   maxLine: 5,

@@ -9,6 +9,7 @@ import 'package:s_factory/presentation/screens/home/blocs/camera_scan_bloc/camer
 import 'package:s_factory/presentation/screens/home/blocs/home_bloc/home_bloc.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
+import 'package:s_factory/presentation/widgets/s_back_button_widget%20.dart';
 
 class CameraScanSerialWidget extends StatefulWidget {
   const CameraScanSerialWidget({
@@ -19,7 +20,8 @@ class CameraScanSerialWidget extends StatefulWidget {
   State<CameraScanSerialWidget> createState() => _CameraScanSerialWidgetState();
 }
 
-class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
+class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget>
+    with WidgetsBindingObserver {
   late MobileScannerController controller;
 
   late CameraScanBloc _cameraScanBloc;
@@ -27,17 +29,24 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
 
   @override
   void initState() {
-    super.initState();
-    controller = MobileScannerController();
+    controller = MobileScannerController(
+      detectionSpeed: DetectionSpeed.normal,
+    );
     _cameraScanBloc = getIt();
     _homeBloc = context.read();
+    controller.stop();
+
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    super.dispose();
-    controller.dispose();
     controller.stop();
+
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    controller.dispose();
   }
 
   @override
@@ -53,6 +62,25 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
             child: MobileScanner(
               controller: controller,
               // fit: BoxFit.contain,
+              startDelay: true,
+              errorBuilder:
+                  (BuildContext p0, MobileScannerException p1, Widget? p2) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child:
+                          Text('${p1.errorCode}\n${p1.errorDetails?.message}'),
+                    ),
+                    SBackButtonWidget(
+                      title: 'Thử lại',
+                      onTap: () {
+                        controller.start();
+                      },
+                    )
+                  ],
+                );
+              },
 
               onDetect: (BarcodeCapture capture) {
                 final List<Barcode> barcodes = capture.barcodes;
@@ -67,7 +95,7 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
           ),
           Positioned(
             child: Column(
-              children: [
+              children: <Widget>[
                 Text(
                   'Căn mạch vào giữa màn hình',
                   style: WowTextTheme.ts16w400(context)
@@ -78,8 +106,9 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
                 ),
                 SvgPicture.asset(
                   SvgPaths.imgScanFrame,
-                  height: 174.h,
-                  width: 257.w,
+                  height: 200.h,
+                  width: 500.w,
+                  fit: BoxFit.cover,
                 ),
                 SizedBox(
                   height: 32.h,
