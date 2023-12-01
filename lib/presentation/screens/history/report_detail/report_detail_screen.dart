@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:s_factory/common/configs/logger_config.dart';
+import 'package:s_factory/common/constant/enum.dart';
 import 'package:s_factory/common/di/app_injector.dart';
-import 'package:s_factory/presentation/model/item_inpection_report_model%20.dart';
+import 'package:s_factory/presentation/app/app_bloc.dart';
+import 'package:s_factory/presentation/app/app_event.dart';
+import 'package:s_factory/presentation/model/list_report_history_po_model.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/bloc/report_detail_bloc.dart';
-import 'package:s_factory/presentation/screens/history/report_detail/components/detail_report_info_widget.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/info_basic_detail_report_widget.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/info_detail_report_widget.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/components/tabbar_talbe_detail_report_widget.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/technical_drawing_detail_report_widget.dart';
+import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_appbar_widget.dart';
@@ -18,11 +23,11 @@ import 'package:s_factory/presentation/widgets/s_scaffold_widget.dart';
 class ReportDetailScreen extends StatefulWidget {
   const ReportDetailScreen({
     super.key,
-    required this.item,
+    required this.poReportModel,
   });
   static const String pathRoute = 'reportDetailRoute';
 
-  final ItemInpectionReportModel item;
+  final POReportModel? poReportModel;
 
   @override
   State<ReportDetailScreen> createState() => _ReportDetailScreenState();
@@ -35,6 +40,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     // TODO: implement initState
     super.initState();
     _reportDetailBloc = getIt();
+    _reportDetailBloc.add(GetDetailReportEvent(id: widget.poReportModel?.id));
   }
 
   @override
@@ -48,7 +54,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           ),
         ),
         leadingWidth: 150.w,
-        action: [
+        action: <Widget>[
           Padding(
             padding: EdgeInsets.all(12.w),
             child: Container(
@@ -60,7 +66,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                 color: ColorConstant.kPrimary02,
               ),
               child: Row(
-                children: [
+                children: <Widget>[
                   SCricleAvatarWidget(
                     size: 32.w,
                     urlImage:
@@ -77,32 +83,54 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
         ],
       ),
       body: BlocProvider<ReportDetailBloc>(
-        create: (context) => _reportDetailBloc,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-            children: <Widget>[
-              InfoBasicReportWidget(
-                item: widget.item,
-              ),
-              SizedBox(
-                height: 24.h,
-              ),
-              InfoDetailReportWidget(
-                item: widget.item,
-              ),
-              SizedBox(
-                height: 32.h,
-              ),
-              const TechnicalDrawingReportWidget(),
-              SizedBox(
-                height: 32.h,
-              ),
-              DetailReportInfoWidget(),
-              SizedBox(
-                height: 32.h,
-              ),
-            ],
+        create: (BuildContext context) => _reportDetailBloc,
+        child: BlocListener<ReportDetailBloc, ReportDetailState>(
+          listener: (BuildContext context, ReportDetailState state) {
+            switch (state.getDetailReportState) {
+              case LoadState.loading:
+                context.read<AppBloc>().add(OnShowLoadingEvent());
+
+                break;
+              case LoadState.failure:
+                context.read<AppBloc>().add(OnHideLoadingEvent());
+                getIt<NavigationService>().openDialog(
+                  title: 'Lỗi',
+                  content: state.message,
+                  onTap: () {
+                    logi(message: 'message');
+                    getIt<NavigationService>().pop();
+                  },
+                );
+                break;
+              case LoadState.success:
+                context.read<AppBloc>().add(OnHideLoadingEvent());
+
+                break;
+              default:
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              children: <Widget>[
+                InfoBasicReportWidget(),
+                SizedBox(
+                  height: 24.h,
+                ),
+                InfoDetailReportWidget(),
+                SizedBox(
+                  height: 32.h,
+                ),
+                const TechnicalDrawingReportWidget(),
+                SizedBox(
+                  height: 32.h,
+                ),
+                TabBarTableDetailReportWidget(),
+                SizedBox(
+                  height: 32.h,
+                ),
+              ],
+            ),
           ),
         ),
       ),

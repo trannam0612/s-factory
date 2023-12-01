@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:s_factory/data/datasource/remote/responses/product/product_type_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/test_base_response.dart';
 
 part 'list_report_history_po_response.g.dart';
@@ -34,6 +33,7 @@ class POReportResponse extends BaseResponse2 {
   POReportResponse({
     this.id,
     this.status,
+    this.result,
     this.stampType,
     this.code,
   });
@@ -48,6 +48,8 @@ class POReportResponse extends BaseResponse2 {
   final String? stampType;
   @JsonKey(name: 'code')
   final String? code;
+  @JsonKey(name: 'result')
+  final String? result;
 
   Map<String, dynamic> toJson() => _$POReportResponseToJson(this);
 

@@ -10,9 +10,11 @@ class ReportEvent extends Equatable {
 class InitListProductEvent extends ReportEvent {
   const InitListProductEvent({
     this.productionOrder,
+    this.listSerial,
   });
 
   final ProductionOrderModel? productionOrder;
+  final List<String>? listSerial;
 }
 
 class SelectPOStatusEvent extends ReportEvent {
@@ -29,11 +31,13 @@ class UpdateValueProductDetailEvent extends ReportEvent {
     this.serial,
     this.standardId,
     this.result,
+    this.note,
   });
 
   final String? standardId;
   final String? serial;
   final String? value;
+  final String? note;
   final ReportStandardResult? result;
 }
 

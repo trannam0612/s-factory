@@ -10,6 +10,7 @@ import 'package:s_factory/data/datasource/remote/responses/product/list_all_prod
 import 'package:s_factory/data/datasource/remote/responses/product/list_report_history_po_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_report_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_response.dart';
+import 'package:s_factory/data/datasource/remote/responses/product/report_detail_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/test_base_response.dart';
 
 class ProductGraphQLImplement extends ProductGraphQL {
@@ -86,9 +87,9 @@ class ProductGraphQLImplement extends ProductGraphQL {
   }
 
   @override
-  Future<DataResponse<CheckSerialResponse>?> factoryPOReportDetail(
+  Future<DataResponse<ReportDetailResponse>?> factoryPOReportDetail(
       Map<String, dynamic> params) async {
-    final DataResponse<CheckSerialResponse>? response = await _client.query(
+    final DataResponse<ReportDetailResponse>? response = await _client.query(
       ProductRequest.factoryPOReportDetail,
       'factoryPOReportDetail',
       vars: params,

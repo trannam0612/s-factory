@@ -28,6 +28,7 @@ POReportResponse _$POReportResponseFromJson(Map<String, dynamic> json) =>
     POReportResponse(
       id: json['id'] as String?,
       status: json['status'] as String?,
+      result: json['result'] as String?,
       stampType: json['stampType'] as String?,
       code: json['code'] as String?,
     );
@@ -38,4 +39,5 @@ Map<String, dynamic> _$POReportResponseToJson(POReportResponse instance) =>
       'status': instance.status,
       'stampType': instance.stampType,
       'code': instance.code,
+      'result': instance.result,
     };

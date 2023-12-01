@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:s_factory/presentation/model/item_inpection_report_model%20.dart';
+import 'package:s_factory/presentation/model/list_report_history_po_model.dart';
 import 'package:s_factory/presentation/model/production_order_model.dart';
 import 'package:s_factory/presentation/screens/auth/forgot_password/confirm_otp/confirm_otp_screen.dart';
 import 'package:s_factory/presentation/screens/auth/forgot_password/input_phone/input_phone_screen.dart';
@@ -30,9 +30,9 @@ class ScreenDI {
     // injector.registerFactory<Widget>(() => const ReportScreen(),
     //     instanceName: ReportScreen.pathRoute);
 
-    injector.registerFactoryParam<Widget, ProductionOrderModel, dynamic>(
-        (ProductionOrderModel param1, param2) => ReportScreen(
-              productionOrder: param1,
+    injector.registerFactoryParam<Widget, ReportScreenArg, dynamic>(
+        (ReportScreenArg param1, param2) => ReportScreen(
+              arg: param1,
             ),
         instanceName: ReportScreen.pathRoute);
 
@@ -45,9 +45,9 @@ class ScreenDI {
             ),
         instanceName: ListReportHistoryPOScreen.pathRoute);
 
-    injector.registerFactoryParam<Widget, ItemInpectionReportModel, dynamic>(
-        (ItemInpectionReportModel param1, param2) => ReportDetailScreen(
-              item: param1,
+    injector.registerFactoryParam<Widget, POReportModel, dynamic>(
+        (POReportModel param1, param2) => ReportDetailScreen(
+              poReportModel: param1,
             ),
         instanceName: ReportDetailScreen.pathRoute);
   }

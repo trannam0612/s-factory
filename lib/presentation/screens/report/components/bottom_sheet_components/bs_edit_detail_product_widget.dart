@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
@@ -16,21 +17,25 @@ class InputEditValueWidget extends StatelessWidget {
     super.key,
     required this.value,
     required this.result,
+    this.note,
     this.onTapConfirm,
   });
   final String value;
+  final String? note;
   final ReportStandardResult result;
-  final Function(String?, ReportStandardResult?)? onTapConfirm;
+  final Function(String?, ReportStandardResult?, String?)? onTapConfirm;
 
   @override
   Widget build(BuildContext context) {
     final TextEditingController txtValue =
         TextEditingController(text: value.toString());
+    final TextEditingController txtNote = TextEditingController(text: note);
 
     final ValueNotifier<ReportStandardResult?> isPass =
         ValueNotifier<ReportStandardResult?>(result);
 
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
@@ -51,91 +56,109 @@ class InputEditValueWidget extends StatelessWidget {
                 isConfirm: true,
                 onTap: () {
                   logi(message: 'onTapConfirm:${txtValue.text}');
-                  onTapConfirm?.call(txtValue.text, isPass.value);
+                  logi(message: 'txtNote:${txtNote.text.isEmpty}');
+                  onTapConfirm?.call(txtValue.text, isPass.value, txtNote.text);
                 },
               ),
             ],
           ),
           Container(
-            height: 200.h,
             padding: EdgeInsets.symmetric(
               vertical: 30.h,
               horizontal: 16.w,
             ),
             width: double.infinity,
             color: ColorConstant.kWhite,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 5,
-                  child: WowTitleTextFieldWidget(
-                    textInputType: TextInputType.number,
-                    controller: txtValue,
-                    title: 'Kết quả kiểm tra',
-                  ),
+            child: Column(
+              children: [
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 5,
+                      child: WowTitleTextFieldWidget(
+                        controller: txtValue,
+                        title: 'Kết quả kiểm tra',
+                        textInputType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 40.w,
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: ValueListenableBuilder<ReportStandardResult?>(
+                        valueListenable: isPass,
+                        builder: (
+                          BuildContext context,
+                          ReportStandardResult? valuePass,
+                          Widget? child,
+                        ) =>
+                            Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Đánh giá',
+                              style: WowTextTheme.ts14w600(context).copyWith(
+                                color: ColorConstant.kTextColor,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 8.h,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: _buildOptionSelectReportWidget(
+                                    context,
+                                    isSelected:
+                                        valuePass == ReportStandardResult.pass,
+                                    isHasValue: txtValue.text.isNotNullOrEmpty,
+                                    buttonType: ReportStandardResult.pass,
+                                    onTap: () {
+                                      logi(message: 'true');
+                                      isPass.value = ReportStandardResult.pass;
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: _buildOptionSelectReportWidget(
+                                    context,
+                                    isSelected:
+                                        valuePass == ReportStandardResult.fail,
+                                    isHasValue: txtValue.text.isNotNullOrEmpty,
+                                    buttonType: ReportStandardResult.fail,
+                                    onTap: () {
+                                      logi(message: 'fail:$valuePass');
+
+                                      isPass.value = ReportStandardResult.fail;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(
-                  width: 40.w,
+                  height: 4.h,
                 ),
-                Expanded(
-                  flex: 5,
-                  child: ValueListenableBuilder<ReportStandardResult?>(
-                    valueListenable: isPass,
-                    builder: (
-                      BuildContext context,
-                      ReportStandardResult? valuePass,
-                      Widget? child,
-                    ) =>
-                        Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'Đánh giá',
-                          style: WowTextTheme.ts14w600(context).copyWith(
-                            color: ColorConstant.kTextColor,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: _buildOptionSelectReportWidget(
-                                context,
-                                isSelected:
-                                    valuePass == ReportStandardResult.pass,
-                                isHasValue: txtValue.text.isNotNullOrEmpty,
-                                buttonType: ReportStandardResult.pass,
-                                onTap: () {
-                                  logi(message: 'true');
-                                  isPass.value = ReportStandardResult.pass;
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Expanded(
-                              child: _buildOptionSelectReportWidget(
-                                context,
-                                isSelected:
-                                    valuePass == ReportStandardResult.fail,
-                                isHasValue: txtValue.text.isNotNullOrEmpty,
-                                buttonType: ReportStandardResult.fail,
-                                onTap: () {
-                                  logi(message: 'fail:$valuePass');
-
-                                  isPass.value = ReportStandardResult.fail;
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                )
+                WowTitleTextFieldWidget(
+                  controller: txtNote,
+                  title: 'Nhập ghi chú',
+                  hintText: 'Nhập ghi chú...',
+                  maxLine: 5,
+                ),
               ],
             ),
           ),

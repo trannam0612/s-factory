@@ -8,3 +8,12 @@ EventTransformer<E> debounce<E>(Duration duration) {
     return events.debounce(duration).switchMap(mapper);
   };
 }
+
+class ValidatorUtils {
+  String? validatorEmpty(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Không được để trống';
+    }
+    return null;
+  }
+}

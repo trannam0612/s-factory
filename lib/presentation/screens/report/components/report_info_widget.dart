@@ -10,11 +10,11 @@ class ReportInfoWidget extends StatefulWidget {
   const ReportInfoWidget({
     super.key,
     this.productionOrder,
-    this.indexTab,
+    this.listSerial,
   });
   final ProductionOrderModel? productionOrder;
 
-  final Function(int)? indexTab;
+  final List<String>? listSerial;
 
   @override
   State<ReportInfoWidget> createState() => _ReportInfoWidgetState();
@@ -45,9 +45,6 @@ class _ReportInfoWidgetState extends State<ReportInfoWidget>
       child: Column(
         children: [
           TabBar(
-            onTap: (int value) {
-              widget.indexTab?.call(value);
-            },
             tabs: const <Widget>[
               Tab(text: 'Đánh giá chi tiết'),
               Tab(text: 'Đánh giá tổng quan'),
@@ -65,7 +62,7 @@ class _ReportInfoWidgetState extends State<ReportInfoWidget>
             child: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                TableReportDetailWidget(),
+                TableReportDetailWidget(listSerial: widget.listSerial),
                 TableReportOverviewWidget(
                   listStandard:
                       widget.productionOrder?.productType?.overviewStandards ??

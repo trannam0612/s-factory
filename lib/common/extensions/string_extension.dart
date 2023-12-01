@@ -162,10 +162,12 @@ extension StringPOStatusExtension on String {
 
 extension StringReportStandardResultExtension on String {
   ReportStandardResult getReportStandardResult() {
-    if (this == POStatus.failed.value) {
+    if (this == ReportStandardResult.fail.value) {
       return ReportStandardResult.fail;
-    } else {
+    } else if (this == ReportStandardResult.pass.value) {
       return ReportStandardResult.pass;
+    } else {
+      return ReportStandardResult.unknow;
     }
   }
 

@@ -28,8 +28,6 @@ class BSSelectStandardStatusWidget extends StatelessWidget {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // alignment: Alignment.centerRight,
-        // clipBehavior: Clip.none,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           Row(
@@ -61,59 +59,56 @@ class BSSelectStandardStatusWidget extends StatelessWidget {
             ),
             width: double.infinity,
             color: ColorConstant.kWhite,
-            child: Expanded(
-              flex: 5,
-              child: ValueListenableBuilder<ReportStandardResult?>(
-                valueListenable: isPass,
-                builder: (
-                  BuildContext context,
-                  ReportStandardResult? valuePass,
-                  Widget? child,
-                ) =>
-                    Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Đánh giá',
-                      style: WowTextTheme.ts14w600(context).copyWith(
-                        color: ColorConstant.kTextColor,
+            child: ValueListenableBuilder<ReportStandardResult?>(
+              valueListenable: isPass,
+              builder: (
+                BuildContext context,
+                ReportStandardResult? valuePass,
+                Widget? child,
+              ) =>
+                  Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Đánh giá',
+                    style: WowTextTheme.ts14w600(context).copyWith(
+                      color: ColorConstant.kTextColor,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8.h,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: _buildOptionSelectReportWidget(
+                          context,
+                          isSelected: valuePass == ReportStandardResult.pass,
+                          buttonType: ReportStandardResult.pass,
+                          onTap: () {
+                            logi(message: 'true');
+                            isPass.value = ReportStandardResult.pass;
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 8.h,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: _buildOptionSelectReportWidget(
-                            context,
-                            isSelected: valuePass == ReportStandardResult.pass,
-                            buttonType: ReportStandardResult.pass,
-                            onTap: () {
-                              logi(message: 'true');
-                              isPass.value = ReportStandardResult.pass;
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          child: _buildOptionSelectReportWidget(
-                            context,
-                            isSelected: valuePass == ReportStandardResult.fail,
-                            buttonType: ReportStandardResult.fail,
-                            onTap: () {
-                              logi(message: 'fail:$valuePass');
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Expanded(
+                        child: _buildOptionSelectReportWidget(
+                          context,
+                          isSelected: valuePass == ReportStandardResult.fail,
+                          buttonType: ReportStandardResult.fail,
+                          onTap: () {
+                            logi(message: 'fail:$valuePass');
 
-                              isPass.value = ReportStandardResult.fail;
-                            },
-                          ),
+                            isPass.value = ReportStandardResult.fail;
+                          },
                         ),
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
           ),

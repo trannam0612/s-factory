@@ -90,6 +90,7 @@ class SampleStandard {
     this.serial,
     this.result,
     this.value,
+    this.note,
   });
 
   factory SampleStandard.fromJson(Map<String, dynamic> json) =>
@@ -99,7 +100,9 @@ class SampleStandard {
   @JsonKey(name: 'result')
   final String? result;
   @JsonKey(name: 'value')
-  final int? value;
+  final double? value;
+  @JsonKey(name: 'note')
+  final String? note;
 
   Map<String, dynamic> toJson() => _$SampleStandardToJson(this);
 }

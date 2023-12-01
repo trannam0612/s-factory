@@ -17,6 +17,13 @@ StandardProductResponse _$StandardProductResponseFromJson(
       type: json['type'] as String?,
       version: json['version'] as String?,
       reviewType: json['reviewType'] as String?,
+      samples: (json['samples'] as List<dynamic>?)
+          ?.map(
+              (e) => SampleStandardResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      ngCount: json['ngCount'] as int?,
+      result: json['result'] as String?,
+      note: json['note'] as String?,
     );
 
 Map<String, dynamic> _$StandardProductResponseToJson(
@@ -30,6 +37,10 @@ Map<String, dynamic> _$StandardProductResponseToJson(
       'type': instance.type,
       'version': instance.version,
       'reviewType': instance.reviewType,
+      'ngCount': instance.ngCount,
+      'note': instance.note,
+      'result': instance.result,
+      'samples': instance.samples,
     };
 
 SampleStandardResponse _$SampleStandardResponseFromJson(
@@ -43,6 +54,9 @@ SampleStandardResponse _$SampleStandardResponseFromJson(
       type: json['type'] as String?,
       version: json['version'] as String?,
       reviewType: json['reviewType'] as String?,
+      note: json['note'] as String?,
+      result: json['result'] as String?,
+      value: json['value'] as num?,
     );
 
 Map<String, dynamic> _$SampleStandardResponseToJson(
@@ -56,4 +70,7 @@ Map<String, dynamic> _$SampleStandardResponseToJson(
       'type': instance.type,
       'version': instance.version,
       'reviewType': instance.reviewType,
+      'note': instance.note,
+      'value': instance.value,
+      'result': instance.result,
     };

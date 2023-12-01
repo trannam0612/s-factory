@@ -23,13 +23,23 @@ import 'package:s_factory/presentation/widgets/s_appbar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_cricel_avatar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_scaffold_widget.dart';
 
+class ReportScreenArg {
+  ReportScreenArg({
+    this.productionOrder,
+    this.listSerial,
+  });
+
+  final ProductionOrderModel? productionOrder;
+  final List<String>? listSerial;
+}
+
 class ReportScreen extends StatefulWidget {
   ReportScreen({
     super.key,
-    this.productionOrder,
+    this.arg,
   });
   static const String pathRoute = 'reportRoute';
-  final ProductionOrderModel? productionOrder;
+  final ReportScreenArg? arg;
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -48,12 +58,13 @@ class _ReportScreenState extends State<ReportScreen> {
     super.initState();
     _reportBloc = getIt();
     _reportBloc.add(InitListProductEvent(
-      productionOrder: widget.productionOrder,
+      productionOrder: widget.arg?.productionOrder,
+      listSerial: widget.arg?.listSerial,
     ));
     _txtProvider = TextEditingController();
     _txtDocument = TextEditingController();
     _txtModelNumber = TextEditingController(
-        text: (widget.productionOrder?.uniqueCodes?.length ?? 0).toString());
+        text: (widget.arg?.listSerial?.length ?? 0).toString());
     _txtNG = TextEditingController();
     _txtResult = TextEditingController();
     _txtNote = TextEditingController();
@@ -120,6 +131,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     getIt<NavigationService>().openDialog(
                       title: 'Lỗi',
                       content: state.message,
+                      onTap: () {
+                        getIt<NavigationService>().pop();
+                      },
                     );
                     break;
                   case LoadState.success:
@@ -149,7 +163,7 @@ class _ReportScreenState extends State<ReportScreen> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: <Widget>[
-                  BasicInfoWidget(productionOrder: widget.productionOrder),
+                  BasicInfoWidget(productionOrder: widget.arg?.productionOrder),
                   SizedBox(
                     height: 34.h,
                   ),
@@ -162,15 +176,13 @@ class _ReportScreenState extends State<ReportScreen> {
                     height: 32.h,
                   ),
                   TechnicalDrawingWidget(
-                      productionOrder: widget.productionOrder),
+                      productionOrder: widget.arg?.productionOrder),
                   SizedBox(
                     height: 32.h,
                   ),
                   ReportInfoWidget(
-                    productionOrder: widget.productionOrder,
-                    indexTab: (int p0) {
-                      currentPage.value = p0;
-                    },
+                    productionOrder: widget.arg?.productionOrder,
+                    listSerial: widget.arg?.listSerial,
                   ),
                   SizedBox(
                     height: 32.h,
@@ -203,7 +215,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                 ng: _txtNG.text,
                                 result: _txtResult.text,
                                 note: _txtNote.text,
-                                productionOrder: widget.productionOrder,
+                                productionOrder: widget.arg?.productionOrder,
                                 reportType: valueIndexPage,
                               ),
                             );

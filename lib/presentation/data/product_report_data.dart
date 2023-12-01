@@ -94,7 +94,7 @@ class StandardValueData {
   });
 
   final String? serial;
-  final String? value;
+  final double? value;
   final ReportStandardResult? result;
   final int? ngCount;
   final String? note;
@@ -108,13 +108,17 @@ class StandardValueData {
 
   StandardValueData copyWith({
     String? serial,
-    String? value,
+    double? value,
+    String? note,
+    int? ngCount,
     ReportStandardResult? result,
   }) {
     return StandardValueData(
       serial: serial ?? this.serial,
       value: value ?? this.value,
       result: result ?? this.result,
+      note: note ?? this.note,
+      ngCount: ngCount ?? this.ngCount,
     );
   }
 }

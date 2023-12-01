@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/presentation/screens/report/components/bottom_sheet_components/bs_select_po_status_widget.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
+import 'package:s_factory/presentation/screens/utils.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 import 'package:s_factory/presentation/widgets/s_field_data_widget.dart';
@@ -31,16 +33,16 @@ class InputMoreInfoWidget extends StatelessWidget {
             Flexible(
               flex: 3,
               child: WowTitleTextFieldWidget(
-                title: 'NG',
-                requiredField: true,
-                controller: txtNG,
-                validator: (String? text) {
-                  if (text == null || text.isEmpty) {
-                    return 'Text is empty';
-                  }
-                  return null;
-                },
-              ),
+                  title: 'NG',
+                  requiredField: true,
+                  controller: txtNG,
+                  validator: (String? text) =>
+                      ValidatorUtils().validatorEmpty(text),
+                  textInputType:
+                      const TextInputType.numberWithOptions(signed: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ]),
             ),
             SizedBox(
               width: 16.w,

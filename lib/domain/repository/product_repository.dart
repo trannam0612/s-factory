@@ -6,6 +6,7 @@ import 'package:s_factory/domain/entities/product/list_all_production_order_enti
 import 'package:s_factory/domain/entities/product/list_report_history_po_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
+import 'package:s_factory/domain/entities/product/report_detail_entity.dart';
 
 import '../entities/data_state.dart';
 
@@ -29,7 +30,7 @@ abstract class ProductRepository {
     POReportFilterBody body,
   );
 
-  Future<DataState<CheckSerialEntity>> factoryPOReportDetail(
+  Future<DataState<ReportDetailEntity>> factoryPOReportDetail(
     String id,
   );
 }

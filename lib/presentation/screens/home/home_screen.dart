@@ -8,6 +8,7 @@ import 'package:s_factory/common/constant/enum.dart';
 import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/presentation/app/app_bloc.dart';
 import 'package:s_factory/presentation/app/app_event.dart';
+import 'package:s_factory/presentation/model/item_product_model.dart';
 import 'package:s_factory/presentation/model/production_order_model.dart';
 import 'package:s_factory/presentation/screens/home/blocs/home_bloc/home_bloc.dart';
 import 'package:s_factory/presentation/screens/home/components/button_confirm_check_report_widget.dart';
@@ -23,13 +24,26 @@ import 'package:s_factory/presentation/widgets/s_appbar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_cricel_avatar_widget.dart';
 import 'package:s_factory/presentation/widgets/s_scaffold_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   static const String pathRoute = 'home';
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late HomeBloc homeBloc;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    homeBloc = getIt();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final HomeBloc _homeBloc = getIt();
     return SScaffoldWidget(
       isScroll: false,
       appBar: SAppBarWidget(
@@ -69,7 +83,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: BlocProvider<HomeBloc>(
-        create: (BuildContext context) => _homeBloc,
+        create: (BuildContext context) => homeBloc,
         child: MultiBlocListener(
           listeners: <SingleChildWidget>[
             BlocListener<HomeBloc, HomeState>(
@@ -127,7 +141,12 @@ class HomeScreen extends StatelessWidget {
 
                     getIt<NavigationService>().navigateToWithArgs(
                       routeName: ReportScreen.pathRoute,
-                      args: productionOrder,
+                      args: ReportScreenArg(
+                        productionOrder: productionOrder,
+                        listSerial: state.listProductModel
+                            ?.map((ProductModel e) => e.uniqueCode ?? '')
+                            .toList(),
+                      ),
                     );
 
                     break;
@@ -159,7 +178,7 @@ class HomeScreen extends StatelessWidget {
                   if (state.listProductModel?.isNotEmpty == true) {
                     return ButtonConfirmCheckReportWidget(
                       onTap: () {
-                        _homeBloc.add(ConfirmReportEvent());
+                        homeBloc.add(ConfirmReportEvent());
                       },
                     );
                   }

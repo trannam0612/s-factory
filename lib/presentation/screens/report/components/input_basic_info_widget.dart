@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:s_factory/presentation/screens/utils.dart';
 import 'package:s_factory/presentation/widgets/s_title_text_field_widget.dart';
 
 class InputBasicInfoWidget extends StatelessWidget {
@@ -23,12 +24,7 @@ class InputBasicInfoWidget extends StatelessWidget {
             title: 'Nhà cung cấp',
             requiredField: true,
             controller: txtProvider,
-            validator: (String? text) {
-              if (text == null || text.isEmpty) {
-                return 'Text is empty';
-              }
-              return null;
-            },
+            validator: (String? text) => ValidatorUtils().validatorEmpty(text),
           ),
         ),
         SizedBox(
@@ -50,12 +46,7 @@ class InputBasicInfoWidget extends StatelessWidget {
             title: 'Số mẫu',
             requiredField: true,
             controller: txtModelNumber,
-            validator: (String? text) {
-              if (text == null || text.isEmpty) {
-                return 'Text is empty';
-              }
-              return null;
-            },
+            validator: (String? text) => ValidatorUtils().validatorEmpty(text),
           ),
         ),
       ],

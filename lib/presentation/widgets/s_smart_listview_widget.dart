@@ -88,20 +88,22 @@ class _SSmartListViewWidgetState<T> extends State<SSmartListViewWidget<T>> {
     return Scaffold(
       body: SmartRefresher(
         enablePullUp: true,
-        header: const WaterDropHeader(),
+        header: const WaterDropHeader(
+          complete: Text('Tải lại thành công'),
+        ),
         footer: CustomFooter(
           builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
             if (mode == LoadStatus.idle) {
-              body = const Text("pull up load");
+              body = const Text('Kéo để tải thêm');
             } else if (mode == LoadStatus.loading) {
               body = const CupertinoActivityIndicator();
             } else if (mode == LoadStatus.failed) {
-              body = const Text("Load Failed!Click retry!");
+              body = const Text('Tải thêm thất lại! Thử lại!');
             } else if (mode == LoadStatus.canLoading) {
-              body = const Text("release to load more");
+              body = const Text('release to load more');
             } else {
-              body = const Text("No more Data");
+              body = const Text('No more Data');
             }
             return Container(
               height: 55.0,

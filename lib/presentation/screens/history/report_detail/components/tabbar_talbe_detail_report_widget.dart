@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/table_detail_report_detail_widget.dart';
-import 'package:s_factory/presentation/screens/history/report_detail/components/table_detail_report_overview_widget.dart';
+import 'package:s_factory/presentation/screens/history/report_detail/components/table_overview_report_detail_widget.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
 
-class DetailReportInfoWidget extends StatefulWidget {
-  DetailReportInfoWidget({super.key});
+class TabBarTableDetailReportWidget extends StatefulWidget {
+  TabBarTableDetailReportWidget({super.key});
 
   @override
-  State<DetailReportInfoWidget> createState() => _DetailReportInfoWidgetState();
+  State<TabBarTableDetailReportWidget> createState() =>
+      _TabBarTableDetailReportWidgetState();
 }
 
-class _DetailReportInfoWidgetState extends State<DetailReportInfoWidget>
-    with TickerProviderStateMixin {
+class _TabBarTableDetailReportWidgetState
+    extends State<TabBarTableDetailReportWidget> with TickerProviderStateMixin {
   late TabController tabController;
   @override
   void initState() {
@@ -52,12 +53,12 @@ class _DetailReportInfoWidgetState extends State<DetailReportInfoWidget>
             height: 24.h,
           ),
           SizedBox(
-            height: 400.h,
+            height: 700.h,
             child: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                DetailTableReportDetailWidget(),
-                DetailTableReportOverviewWidget(),
+                TableDetailReportDetailWidget(),
+                TableOverviewReportDetailWidget()
               ],
             ),
           )

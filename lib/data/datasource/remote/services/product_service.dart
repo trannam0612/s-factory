@@ -7,6 +7,7 @@ import 'package:s_factory/data/datasource/remote/responses/product/list_all_prod
 import 'package:s_factory/data/datasource/remote/responses/product/list_report_history_po_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_report_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_response.dart';
+import 'package:s_factory/data/datasource/remote/responses/product/report_detail_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/test_base_response.dart';
 import 'package:s_factory/data/datasource/remote/services/base_service.dart';
 import 'package:s_factory/data/mapper/product/check_serial_response_mapper.dart';
@@ -14,11 +15,13 @@ import 'package:s_factory/data/mapper/product/factory_production_order_detail_re
 import 'package:s_factory/data/mapper/product/factory_production_order_report_response_mapper.dart';
 import 'package:s_factory/data/mapper/product/list_all_production_order_response_mapper.dart';
 import 'package:s_factory/data/mapper/product/list_report_history_po_response_mapper.dart';
+import 'package:s_factory/data/mapper/product/report_detail_response_mapper.dart';
 import 'package:s_factory/domain/entities/product/check_serial_entity.dart';
 import 'package:s_factory/domain/entities/product/list_all_production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/list_report_history_po_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
+import 'package:s_factory/domain/entities/product/report_detail_entity.dart';
 
 import '../../../../domain/entities/data_state.dart';
 
@@ -114,19 +117,19 @@ class ProductService with ConvertAbleDataState {
     }
   }
 
-  Future<DataState<CheckSerialEntity>> factoryPOReportDetail(
+  Future<DataState<ReportDetailEntity>> factoryPOReportDetail(
     String id,
   ) async {
     try {
-      final DataResponse<CheckSerialResponse>? response =
+      final DataResponse<ReportDetailResponse>? response =
           await _api.factoryPOReportDetail(<String, String>{
-        'serial': id,
+        'id': id,
       });
 
-      return convertToDataState<CheckSerialEntity, CheckSerialResponse>(
-          response, CheckSerialResponseMapper());
+      return convertToDataState<ReportDetailEntity, ReportDetailResponse>(
+          response, ReportDetailResponseMapper());
     } catch (error) {
-      return DataFailed<CheckSerialEntity>(
+      return DataFailed<ReportDetailEntity>(
         error.toString(),
       );
     }

@@ -24,7 +24,7 @@ class _InputNumberSerialWidgetState extends State<InputNumberSerialWidget> {
   @override
   void initState() {
     super.initState();
-    _txtSerial = TextEditingController(text: 'SNKK66U6S6H4');
+    _txtSerial = TextEditingController();
     _homeBloc = context.read();
   }
 

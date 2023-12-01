@@ -1,6 +1,6 @@
+import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/domain/entities/product/list_report_history_po_entity.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
-import 'package:s_factory/common/extensions/string_extension.dart';
 
 class ListReportHistoryPOModel {
   ListReportHistoryPOModel({
@@ -34,7 +34,8 @@ class POReportModel {
   factory POReportModel.fromEntity({POReportEntity? entity}) {
     return POReportModel(
       id: entity?.id,
-      status: entity?.status?.getReportStandardResult(),
+      status: entity?.status?.getPOStatus(),
+      result: entity?.result?.getPOStatus(),
       stampType: entity?.stampType,
       code: entity?.code,
     );
@@ -44,10 +45,12 @@ class POReportModel {
     this.status,
     this.stampType,
     this.code,
+    this.result,
   });
 
   final String? id;
-  final ReportStandardResult? status;
+  final POStatus? status;
+  final POStatus? result;
   final String? stampType;
   final String? code;
 }

@@ -55,7 +55,8 @@ SampleStandard _$SampleStandardFromJson(Map<String, dynamic> json) =>
     SampleStandard(
       serial: json['serial'] as String?,
       result: json['result'] as String?,
-      value: json['value'] as int?,
+      value: (json['value'] as num?)?.toDouble(),
+      note: json['note'] as String?,
     );
 
 Map<String, dynamic> _$SampleStandardToJson(SampleStandard instance) =>
@@ -63,4 +64,5 @@ Map<String, dynamic> _$SampleStandardToJson(SampleStandard instance) =>
       'serial': instance.serial,
       'result': instance.result,
       'value': instance.value,
+      'note': instance.note,
     };

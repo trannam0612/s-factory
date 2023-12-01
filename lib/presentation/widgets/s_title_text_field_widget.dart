@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:s_factory/extended_text_theme.dart';
@@ -19,6 +20,7 @@ class WowTitleTextFieldWidget extends StatefulWidget {
     this.maxLine = 1,
     this.controller,
     this.validator,
+    this.inputFormatters,
   }) : super(key: key);
 
   final String? title;
@@ -32,6 +34,7 @@ class WowTitleTextFieldWidget extends StatefulWidget {
   final int? maxLine;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<WowTitleTextFieldWidget> createState() =>
@@ -100,6 +103,7 @@ class _WowTitleTextFieldWidgetState extends State<WowTitleTextFieldWidget> {
           valueListenable: _obscureTextNotifier,
           builder: (_, bool obscureText, __) {
             return TextFormField(
+              inputFormatters: widget.inputFormatters,
               controller: widget.controller,
               style: WowTextTheme.ts16w400(context).copyWith(
                 color: ColorConstant.kTextColor,

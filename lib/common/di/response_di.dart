@@ -5,6 +5,7 @@ import 'package:s_factory/data/datasource/remote/responses/product/list_all_prod
 import 'package:s_factory/data/datasource/remote/responses/product/list_report_history_po_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_report_response.dart';
 import 'package:s_factory/data/datasource/remote/responses/product/production_order_response.dart';
+import 'package:s_factory/data/datasource/remote/responses/product/report_detail_response.dart';
 
 class ResponseDI {
   ResponseDI._();
@@ -15,5 +16,6 @@ class ResponseDI {
     injector.registerLazySingleton(() => ProductionOrderReportResponse());
     injector.registerLazySingleton(() => ListAllProductionOrdersResponse());
     injector.registerLazySingleton(() => ListReportHistoryPOResponse());
+    injector.registerLazySingleton(() => ReportDetailResponse());
   }
 }

@@ -8,6 +8,7 @@ import 'package:s_factory/domain/entities/product/list_all_production_order_enti
 import 'package:s_factory/domain/entities/product/list_report_history_po_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
+import 'package:s_factory/domain/entities/product/report_detail_entity.dart';
 import 'package:s_factory/domain/repository/product_repository.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
@@ -60,10 +61,10 @@ class ProductRepositoryImpl extends ProductRepository {
   }
 
   @override
-  Future<DataState<CheckSerialEntity>> factoryPOReportDetail(
+  Future<DataState<ReportDetailEntity>> factoryPOReportDetail(
     String id,
   ) async {
-    DataState<CheckSerialEntity> response =
+    DataState<ReportDetailEntity> response =
         await _productRemoteDataSource.factoryPOReportDetail(id);
     return response;
   }

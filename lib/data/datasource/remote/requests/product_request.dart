@@ -174,40 +174,61 @@ class ProductRequest {
   static const String factoryPOReportDetail = r'''
     query factoryPOReportDetail($id: String!){
   factoryPOReportDetail(id: $id) {
-    total
-    count
-    poReports{
+    id
+    code
+    poCode
+    createdAt
+    productionAt
+    productionCount
+    startNo
+    endNo
+    status
+    stampType
+    providerCode
+    refDocument
+    ngCount
+    note
+    uniqueCodes
+    sampleSerials
+    productType{
+      name
+    }
+    owner{
+      fullname
+    }
+    detailStandards {
       id
-      status
-      stampType
-      productType {
+      name
+      standard
+      description
+      tool
+      type
+      version
+      reviewType
+      standard
+      result
+      samples {
         id
-        code
-        name
-        unitCode
-        unitName
-        standardImageUrls
-        detailStandards {
-          id
-          name
-          standard
-          description
-          tool
-          type
-          version
-          reviewType
-        }
-        overviewStandards {
-          id
-          name
-          standard
-          description
-          tool
-          type
-          version
-          reviewType
-        }
+        standardId
+        note
+        value
+        result
+        note
       }
+    }
+    overviewStandards {
+      id
+      name
+      standard
+      description
+      tool
+      type
+      version
+      reviewType
+      standard
+      note
+      ngCount
+      result
     }
   }
 }

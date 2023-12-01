@@ -35,6 +35,7 @@ class POReportEntity {
       status: response?.status,
       stampType: response?.stampType,
       code: response?.code,
+      result: response?.result,
     );
   }
   POReportEntity({
@@ -42,10 +43,12 @@ class POReportEntity {
     this.status,
     this.stampType,
     this.code,
+    this.result,
   });
 
   final String? id;
   final String? status;
   final String? stampType;
   final String? code;
+  final String? result;
 }

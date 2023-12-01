@@ -8,6 +8,7 @@ import 'package:s_factory/domain/entities/product/list_all_production_order_enti
 import 'package:s_factory/domain/entities/product/list_report_history_po_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_entity.dart';
 import 'package:s_factory/domain/entities/product/production_order_report_entity.dart';
+import 'package:s_factory/domain/entities/product/report_detail_entity.dart';
 
 class ProductRemoteDataSource {
   ProductRemoteDataSource(this._productService);
@@ -54,8 +55,8 @@ class ProductRemoteDataSource {
     return response;
   }
 
-  Future<DataState<CheckSerialEntity>> factoryPOReportDetail(String id) async {
-    final DataState<CheckSerialEntity> response =
+  Future<DataState<ReportDetailEntity>> factoryPOReportDetail(String id) async {
+    final DataState<ReportDetailEntity> response =
         await _productService.factoryPOReportDetail(id);
 
     return response;

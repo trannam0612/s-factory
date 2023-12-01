@@ -37,6 +37,7 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
   void dispose() {
     super.dispose();
     controller.dispose();
+    controller.stop();
   }
 
   @override
@@ -49,21 +50,20 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget> {
           SizedBox(
             width: double.infinity,
             height: 390.h,
-            // child: MobileScanner(
-            //   controller: controller,
-            //   // fit: BoxFit.contain,
+            child: MobileScanner(
+              controller: controller,
+              // fit: BoxFit.contain,
 
-            //   onDetect: (BarcodeCapture capture) {
-            //     final List<Barcode> barcodes = capture.barcodes;
+              onDetect: (BarcodeCapture capture) {
+                final List<Barcode> barcodes = capture.barcodes;
 
-            //     logi(message: 'barcodes:${barcodes.map((e) => e.rawValue)}');
-            //     for (final Barcode barcode in barcodes) {
-            //       debugPrint('Barcode found! ${barcode.rawValue}');
-            //       final String value = barcode.rawValue ?? '';
-            //       _homeBloc.add(CheckSerialEvent(serial: value));
-            //     }
-            //   },
-            // ),
+                for (final Barcode barcode in barcodes) {
+                  debugPrint('Barcode found! ${barcode.rawValue}');
+                  final String value = barcode.rawValue ?? '';
+                  _homeBloc.add(CheckSerialEvent(serial: value));
+                }
+              },
+            ),
           ),
           Positioned(
             child: Column(

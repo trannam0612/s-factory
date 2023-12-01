@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
@@ -100,7 +101,12 @@ class _BSEditOverviewProductWidgetState
                     Expanded(
                       flex: 5,
                       child: WowTitleTextFieldWidget(
-                        textInputType: TextInputType.number,
+                        textInputType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
+                        ],
                         controller: txtValue,
                         title: 'Mẫu NG',
                         hintText: 'Nhập Mẫu NG...',

@@ -78,7 +78,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     on<ConfirmReportEvent>(_handleConfirmReport);
     on<SelectPOStatusEvent>(_handleSelectPOStatus);
   }
-
+  late List<String> listSerial;
   FutureOr<void> _handleInitListProduct(
       InitListProductEvent event, Emitter<ReportState> emit) {
     emit(state.copyWith(getDataListProductState: LoadState.loading));
@@ -87,8 +87,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           <StandardProductReportData>[];
       final List<StandardProductReportData> listProductOverView =
           <StandardProductReportData>[];
-      final List<String> listSerial =
-          event.productionOrder?.uniqueCodes ?? <String>[];
+      listSerial = event.listSerial ?? <String>[];
       final List<StandardProductModel> listStandardDetail =
           event.productionOrder?.productType?.detailStandards ??
               <StandardProductModel>[];
@@ -109,13 +108,13 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       }
       for (int i = 0; i < listStandardOverView.length; i++) {
         listProductOverView.add(StandardProductReportData(
-            id: listStandardDetail[i].id,
-            name: listStandardDetail[i].name,
-            description: listStandardDetail[i].description,
-            reviewType: listStandardDetail[i].reviewType,
-            standard: listStandardDetail[i].standard,
-            tool: listStandardDetail[i].tool,
-            type: listStandardDetail[i].type,
+            id: listStandardOverView[i].id,
+            name: listStandardOverView[i].name,
+            description: listStandardOverView[i].description,
+            reviewType: listStandardOverView[i].reviewType,
+            standard: listStandardOverView[i].standard,
+            tool: listStandardOverView[i].tool,
+            type: listStandardOverView[i].type,
             result: ReportStandardResult.pass));
       }
 
@@ -166,6 +165,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       final ReportStandardResult? result = event.result;
       final String? value = event.value;
       final String? serial = event.serial;
+      final String? note = event.note;
       final String? standardId = event.standardId;
 
       if (value != null || result != null) {
@@ -178,8 +178,9 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
             if (standardId == productItem.id) {
               if (serial == listStandardValue[j].serial) {
                 listStandardValue[j] = listStandardValue[j].copyWith(
-                  value: value,
+                  value: double.parse(value ?? '0'),
                   result: result,
+                  note: note,
                 );
               }
             }
@@ -300,42 +301,47 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       final String? ng = event.ng;
       final String? note = event.note;
       final String? poId = event.productionOrder?.id;
-      final List<String>? sampleSerials = event.productionOrder?.uniqueCodes;
+
       POReportArgs body = POReportArgs();
-      late List<Standard>? standardsDetail;
-      if (event.reportType == 0) {
-        standardsDetail = state.listProductDetail
-            ?.map(
-              (StandardProductReportData e) => Standard(
-                  standardId: e.id,
-                  result: e.result?.value,
-                  ngCount: int.parse(e.ngCount ?? '0'),
-                  sampleStandards: e.listStandardValue
-                      ?.map((StandardValueData e) => SampleStandard(
-                            serial: e.serial,
-                            result: e.result?.value,
-                            value: int.parse(e.value ?? '0'),
-                          ))
-                      .toList()),
-            )
-            .toList();
-      } else {
-        standardsDetail = state.listProductOverView
-            ?.map(
-              (StandardProductReportData e) => Standard(
-                  standardId: e.id,
-                  result: e.result?.value,
-                  ngCount: int.parse(e.ngCount ?? '0'),
-                  note: note,
-                  sampleStandards: e.listStandardValue
-                      ?.map((StandardValueData e) => SampleStandard(
-                            serial: e.serial,
-                            result: e.result?.value,
-                            value: int.parse(e.value ?? '0'),
-                          ))
-                      .toList()),
-            )
-            .toList();
+      final List<Standard>? listAllStandard = <Standard>[];
+
+      // add report detail to list
+      //Chi tieets
+
+      List<Standard>? standardsDetail = state.listProductDetail
+          ?.map(
+            (StandardProductReportData e) => Standard(
+                standardId: e.id,
+                result: e.result?.value,
+                ngCount: int.parse(e.ngCount ?? '0'),
+                sampleStandards: e.listStandardValue
+                    ?.map((StandardValueData e) => SampleStandard(
+                          serial: e.serial,
+                          result: e.result?.value,
+                          value: e.value,
+                          note: e.note,
+                        ))
+                    .toList()),
+          )
+          .toList();
+      if (standardsDetail?.isNotEmpty == true && standardsDetail != null) {
+        listAllStandard?.addAll(standardsDetail);
+      }
+      // Tổng quan
+      List<Standard>? standardsOverview = state.listProductOverView
+          ?.map(
+            (StandardProductReportData e) => Standard(
+              standardId: e.id,
+              result: e.result?.value,
+              ngCount: int.parse(e.ngCount ?? '0'),
+              note: e.note,
+              sampleStandards: <SampleStandard>[],
+            ),
+          )
+          .toList();
+
+      if (standardsOverview?.isNotEmpty == true && standardsOverview != null) {
+        listAllStandard?.addAll(standardsOverview);
       }
 
       body = body.copyWith(
@@ -344,8 +350,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         // model:,
         ngCount: int.tryParse(ng ?? '0'),
         poStatus: state.currentPOStatus?.value, note: note, poId: poId,
-        sampleSerials: sampleSerials,
-        standards: standardsDetail,
+        sampleSerials: listSerial,
+        standards: listAllStandard,
       );
 
       final DataState<ProductionOrderReportEntity> dataState =
