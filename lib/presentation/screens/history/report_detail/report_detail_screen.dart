@@ -110,28 +110,27 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
             }
           },
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Column(
-              children: <Widget>[
-                InfoBasicReportWidget(),
-                SizedBox(
-                  height: 24.h,
-                ),
-                InfoDetailReportWidget(),
-                SizedBox(
-                  height: 32.h,
-                ),
-                const TechnicalDrawingReportWidget(),
-                SizedBox(
-                  height: 32.h,
-                ),
-                TabBarTableDetailReportWidget(),
-                SizedBox(
-                  height: 32.h,
-                ),
-              ],
-            ),
-          ),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
+                children: <Widget>[
+                  InfoBasicReportWidget(),
+                  SizedBox(
+                    height: 24.h,
+                  ),
+                  InfoDetailReportWidget(),
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                  const TechnicalDrawingReportWidget(),
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                  TabBarTableDetailReportWidget(),
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                ],
+              )),
         ),
       ),
     );

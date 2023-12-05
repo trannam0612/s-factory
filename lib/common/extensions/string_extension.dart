@@ -14,6 +14,10 @@ extension StringNullExtension on String? {
     return phoneNumber.hasMatch(this!);
   }
 
+  String? clearSpace() {
+    return this?.replaceAll('\n', ' ');
+  }
+
   bool isVerifyCode() {
     if (this == null) return false;
     final RegExp codeReg = RegExp(r'^[0-9]{6}$');

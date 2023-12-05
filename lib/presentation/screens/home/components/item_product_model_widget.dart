@@ -41,6 +41,14 @@ class ProductModelWidget extends StatelessWidget {
                   ),
                   _buidlItemTitleWidget(
                     context,
+                    title: 'Mã sản phẩm',
+                    value: item?.productTypeCode,
+                  ),
+                  SizedBox(
+                    height: 12.h,
+                  ),
+                  _buidlItemTitleWidget(
+                    context,
                     title: 'Serial',
                     value: item?.uniqueCode,
                   ),
@@ -92,6 +100,7 @@ class ProductModelWidget extends StatelessWidget {
     return Row(
       children: [
         Expanded(
+          flex: 2,
           child: Text(
             title,
             maxLines: 1,

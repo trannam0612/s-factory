@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
 import 'package:s_factory/common/constant/enum.dart';
+import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/app/app_bloc.dart';
 import 'package:s_factory/presentation/app/app_event.dart';
@@ -12,7 +13,7 @@ import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.da
 import 'package:s_factory/presentation/utils/color_constant.dart';
 
 class TableOverviewReportDetailWidget extends StatefulWidget {
-  TableOverviewReportDetailWidget({
+  const TableOverviewReportDetailWidget({
     super.key,
   });
 
@@ -23,11 +24,9 @@ class TableOverviewReportDetailWidget extends StatefulWidget {
 
 class _TableOverviewReportDetailWidgetState
     extends State<TableOverviewReportDetailWidget> {
-  late ReportDetailBloc _reportBloc;
   @override
   void initState() {
     super.initState();
-    _reportBloc = context.read();
   }
 
   @override
@@ -75,8 +74,10 @@ class _TableOverviewReportDetailWidgetState
                   border: TableBorder.all(
                     color: ColorConstant.kNeuTral02,
                   ),
+                  dataRowMaxHeight: 100,
+                  dataRowMinHeight: 30,
                   columns: <DataColumn>[
-                    _buildTitleTableWidget(context, value: 'STT'),
+                    // _buildTitleTableWidget(context, value: 'STT'),
                     _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
                     _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
                     _buildTitleTableWidget(context, value: 'Mẫu NG'),
@@ -104,20 +105,21 @@ class _TableOverviewReportDetailWidgetState
         (Set<MaterialState> states) => ColorConstant.kSupportInfo,
       ),
       cells: <DataCell>[
+        // _buildValueTableWidget(
+        //   context,
+        //   value: '${data.type}0${index + 1}',
+        //   bgColor: ColorConstant.kSupportInfo,
+        // ),
         _buildValueTableWidget(
           context,
-          value: '${data.type}0${index + 1}',
+          value: data.name.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
         ),
         _buildValueTableWidget(
           context,
-          value: data.name ?? '',
+          value: data.standard.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
-        ),
-        _buildValueTableWidget(
-          context,
-          value: data.standard ?? '',
-          bgColor: ColorConstant.kSupportInfo,
+          width: 500.w,
         ),
         _buildValueTableWidget(
           context,
@@ -190,7 +192,7 @@ class _TableOverviewReportDetailWidgetState
                             : ColorConstant.kSupportSuccess
                         : null),
                 textAlign: TextAlign.start,
-                maxLines: 2,
+                maxLines: 5,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

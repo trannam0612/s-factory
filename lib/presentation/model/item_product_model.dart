@@ -12,6 +12,7 @@ class ProductModel {
       poId: checkSerialEntity?.productionOrder?.id,
       lot: checkSerialEntity?.productionOrder?.uniqueCodes?.length,
       productName: checkSerialEntity?.productType?.name,
+      productTypeCode: checkSerialEntity?.productType?.code,
     );
   }
   ProductModel({
@@ -23,6 +24,7 @@ class ProductModel {
     this.productName,
     this.poCode,
     this.poId,
+    this.productTypeCode,
     this.lot,
   });
   String? id;
@@ -33,6 +35,7 @@ class ProductModel {
   String? productName;
   String? poCode;
   String? poId;
+  String? productTypeCode;
   int? lot;
 
   ProductModel copyWith({

@@ -5,14 +5,14 @@ import 'package:s_factory/app_routes.dart';
 import 'package:s_factory/common/configs/network_config.dart';
 import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/presentation/app/app_bloc.dart';
-import 'package:s_factory/presentation/screens/auth/login/login_screen.dart';
+import 'package:s_factory/presentation/screens/auth/forgot_password/forgot_screen.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/themes/app_theme_data.dart';
 
 import 'common/configs/app_config.dart';
 
 void main() async {
-  await AppConfig().configApp(buildMode: BuildMode.dev);
+  await AppConfig().configApp(buildMode: BuildMode.staging);
   runApp(const MyApp());
 }
 
@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
             theme: AppThemeData.lightTheme,
             onGenerateRoute: AppRoute.getRoute,
             initialRoute: LoginScreen.pathRoute,
+            // home: MyWidget(),
           );
         },
       ),

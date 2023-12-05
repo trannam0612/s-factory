@@ -37,7 +37,15 @@ class AppConfig {
 
       ErrorWidget.builder = (FlutterErrorDetails details) {
         if (kReleaseMode) {
-          return Container();
+          return Container(
+            color: ColorConstant.kBackgroundColor,
+            child: Center(
+              child: Text(
+                'Error: \n${details.exception.toString()} \n ${details.library}',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
         }
         return Container(
           color: ColorConstant.kBackgroundColor,

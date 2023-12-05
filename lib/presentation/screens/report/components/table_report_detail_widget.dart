@@ -78,8 +78,10 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
               border: TableBorder.all(
                 color: ColorConstant.kNeuTral02,
               ),
+              dataRowMaxHeight: 50,
+              dataRowMinHeight: 30,
               columns: <DataColumn>[
-                _buildTitleTableWidget(context, value: 'STT'),
+                // _buildTitleTableWidget(context, value: 'STT'),
                 _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
                 _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
                 ...List<DataColumn>.generate(widget.listSerial?.length ?? 0,
@@ -112,20 +114,22 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
         (Set<MaterialState> states) => ColorConstant.kSupportInfo,
       ),
       cells: <DataCell>[
+        // _buildValueTableWidget(
+        //   context,
+        //   value: '${data.type}0${index + 1}',
+        //   bgColor: ColorConstant.kSupportInfo,
+        // ),
         _buildValueTableWidget(
           context,
-          value: '${data.type}0${index + 1}',
+          value: data.name.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
+          width: 300.w,
         ),
         _buildValueTableWidget(
           context,
-          value: data.name ?? '',
+          value: data.standard.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
-        ),
-        _buildValueTableWidget(
-          context,
-          value: data.standard ?? '',
-          bgColor: ColorConstant.kSupportInfo,
+          width: 200.w,
         ),
         ...List<DataCell>.generate(
           listStandardValue.length,
@@ -228,6 +232,7 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
     required String value,
     String? note,
     Function()? onTap,
+    double? width,
   }) =>
       DataCell(
         Tooltip(
@@ -240,6 +245,7 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
               borderRadius: BorderRadius.circular(8.w)),
           textStyle: WowTextTheme.ts14w600(context).copyWith(),
           child: Container(
+            width: width,
             foregroundDecoration: note?.isNotNullOrEmpty == true
                 ? const BadgeDecoration(
                     badgeColor: ColorConstant.kSupportWarning,

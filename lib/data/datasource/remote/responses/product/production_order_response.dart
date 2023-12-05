@@ -18,6 +18,7 @@ class ProductionOrderResponse extends BaseResponse2 {
     this.status,
     this.stampType,
     this.productType,
+    this.uniqueCodeCount,
   });
   @JsonKey(name: 'id')
   String? id;
@@ -40,6 +41,8 @@ class ProductionOrderResponse extends BaseResponse2 {
   final String? status;
   @JsonKey(name: 'stampType')
   final String? stampType;
+  @JsonKey(name: 'uniqueCodeCount')
+  final int? uniqueCodeCount;
   @JsonKey(name: 'productType')
   ProductTypeResponse? productType;
 

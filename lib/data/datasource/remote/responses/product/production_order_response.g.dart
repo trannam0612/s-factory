@@ -25,6 +25,7 @@ ProductionOrderResponse _$ProductionOrderResponseFromJson(
           ? null
           : ProductTypeResponse.fromJson(
               json['productType'] as Map<String, dynamic>),
+      uniqueCodeCount: json['uniqueCodeCount'] as int?,
     );
 
 Map<String, dynamic> _$ProductionOrderResponseToJson(
@@ -40,5 +41,6 @@ Map<String, dynamic> _$ProductionOrderResponseToJson(
       'endNo': instance.endNo,
       'status': instance.status,
       'stampType': instance.stampType,
+      'uniqueCodeCount': instance.uniqueCodeCount,
       'productType': instance.productType,
     };

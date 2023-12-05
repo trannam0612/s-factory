@@ -10,8 +10,10 @@ class CameraScanBloc extends Bloc<CameraScanEvent, CameraScanState> {
   CameraScanBloc()
       : super(const CameraScanState(
           isTurnOnFlash: false,
+          isTurnOnScan: true,
         )) {
     on<ToggleTorchEvent>(_handleToggleTorch);
+    on<ToggleScanningEvent>(_handleToggleScanning);
   }
 
   FutureOr<void> _handleToggleTorch(
@@ -30,6 +32,26 @@ class CameraScanBloc extends Bloc<CameraScanEvent, CameraScanState> {
     } catch (e) {
       emit(state.copyWith(
         isTurnOnFlash: false,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  FutureOr<void> _handleToggleScanning(
+      ToggleScanningEvent event, Emitter<CameraScanState> emit) {
+    try {
+      if (event.isTurnOn == true) {
+        emit(state.copyWith(
+          isTurnOnScan: true,
+        ));
+      } else {
+        emit(state.copyWith(
+          isTurnOnScan: false,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        isTurnOnScan: false,
         message: e.toString(),
       ));
     }

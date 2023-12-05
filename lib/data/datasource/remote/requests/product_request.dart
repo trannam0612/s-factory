@@ -119,9 +119,10 @@ class ProductRequest {
     total
     count
     productionOrders{
+      id
       poCode
       status
-      uniqueCodes
+      uniqueCodeCount
       productType {
       id
       code

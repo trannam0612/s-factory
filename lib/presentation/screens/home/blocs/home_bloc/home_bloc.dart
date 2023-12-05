@@ -24,7 +24,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ConfirmReportEvent>(_handleConfirmReport);
     on<CheckSerialEvent>(
       _handleCheckSerial,
-      transformer: debounce(const Duration(milliseconds: 1000)),
+      transformer: debounce(
+        const Duration(milliseconds: 200),
+      ),
     );
   }
 

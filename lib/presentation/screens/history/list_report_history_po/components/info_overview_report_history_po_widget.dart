@@ -43,7 +43,15 @@ class InfoOverviewReportHistoryPOWidget extends StatelessWidget {
                 _buildTitleInfoWidget(
                   context,
                   title: 'Lot',
-                  value: item.uniqueCodes?.length.toString(),
+                  value: item.uniqueCodeCount.toString(),
+                ),
+                SizedBox(
+                  height: 4.h,
+                ),
+                _buildTitleInfoWidget(
+                  context,
+                  title: 'Mã sản phẩm',
+                  value: item.productType?.code.toString(),
                 ),
                 SizedBox(
                   height: 4.h,

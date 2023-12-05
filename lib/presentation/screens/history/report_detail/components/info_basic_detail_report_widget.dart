@@ -55,10 +55,12 @@ class InfoBasicReportWidget extends StatelessWidget {
               BlocBuilder<ReportDetailBloc, ReportDetailState>(
                 builder: (BuildContext context, ReportDetailState state) {
                   final int? lot = state.reportDetailModel?.productionCount;
-                  return _buildTitleInfoWidget(
-                    context,
-                    title: 'Lot',
-                    value: lot.toString(),
+                  return Flexible(
+                    child: _buildTitleInfoWidget(
+                      context,
+                      title: 'Lot',
+                      value: lot.toString(),
+                    ),
                   );
                 },
               ),
@@ -77,10 +79,12 @@ class InfoBasicReportWidget extends StatelessWidget {
               BlocBuilder<ReportDetailBloc, ReportDetailState>(
                 builder: (BuildContext context, ReportDetailState state) {
                   final String? code = state.reportDetailModel?.code;
-                  return _buildTitleInfoWidget(
-                    context,
-                    title: 'Mã số',
-                    value: code,
+                  return Flexible(
+                    child: _buildTitleInfoWidget(
+                      context,
+                      title: 'Mã số',
+                      value: code,
+                    ),
                   );
                 },
               ),

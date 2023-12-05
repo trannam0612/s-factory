@@ -48,7 +48,7 @@ class BasicInfoWidget extends StatelessWidget {
                           style: WowTextTheme.ts16w600(context),
                         ),
                       ],
-                      text: 'P0: ',
+                      text: 'PO: ',
                       style: WowTextTheme.ts16w400(context),
                     ),
                   ),
@@ -64,6 +64,21 @@ class BasicInfoWidget extends StatelessWidget {
                         ),
                       ],
                       text: 'Lot: ',
+                      style: WowTextTheme.ts16w400(context),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 24.w,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: productionOrder?.productType?.code.toString(),
+                          style: WowTextTheme.ts16w600(context),
+                        ),
+                      ],
+                      text: 'Mã sản phẩm: ',
                       style: WowTextTheme.ts16w400(context),
                     ),
                   ),

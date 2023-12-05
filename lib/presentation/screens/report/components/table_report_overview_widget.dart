@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
 import 'package:s_factory/common/constant/enum.dart';
 import 'package:s_factory/common/di/app_injector.dart';
+import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/app/app_bloc.dart';
 import 'package:s_factory/presentation/app/app_event.dart';
@@ -81,8 +82,10 @@ class _TableReportOverviewWidgetState extends State<TableReportOverviewWidget> {
                   border: TableBorder.all(
                     color: ColorConstant.kNeuTral02,
                   ),
+                  dataRowMaxHeight: 50,
+                  dataRowMinHeight: 30,
                   columns: <DataColumn>[
-                    _buildTitleTableWidget(context, value: 'STT'),
+                    // _buildTitleTableWidget(context, value: 'STT'),
                     _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
                     _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
                     _buildTitleTableWidget(context, value: 'Mẫu NG'),
@@ -110,20 +113,21 @@ class _TableReportOverviewWidgetState extends State<TableReportOverviewWidget> {
         (Set<MaterialState> states) => ColorConstant.kSupportInfo,
       ),
       cells: <DataCell>[
+        // _buildValueTableWidget(
+        //   context,
+        //   value: '${data.type}0${index + 1}',
+        //   bgColor: ColorConstant.kSupportInfo,
+        // ),
         _buildValueTableWidget(
           context,
-          value: '${data.type}0${index + 1}',
+          value: data.name.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
         ),
         _buildValueTableWidget(
           context,
-          value: data.name ?? '',
+          value: data.standard.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
-        ),
-        _buildValueTableWidget(
-          context,
-          value: data.standard ?? '',
-          bgColor: ColorConstant.kSupportInfo,
+          width: 500.w,
         ),
         _buildValueTableWidget(
           context,
@@ -208,6 +212,7 @@ class _TableReportOverviewWidgetState extends State<TableReportOverviewWidget> {
   }) =>
       DataColumn(
         label: Container(
+          width: 200.w,
           padding: EdgeInsets.symmetric(horizontal: 24.w),
           alignment: Alignment.center,
           child: Text(

@@ -14,6 +14,7 @@ class ProductionOrderEntity {
     this.endNo,
     this.status,
     this.stampType,
+    this.uniqueCodeCount,
   });
 
   factory ProductionOrderEntity.fromResponse(
@@ -29,6 +30,7 @@ class ProductionOrderEntity {
       endNo: response?.endNo,
       status: response?.status,
       stampType: response?.stampType,
+      uniqueCodeCount: response?.uniqueCodeCount,
       productType: ProductTypeEntity.fromResponse(
         response: response?.productType,
       ),
@@ -47,6 +49,8 @@ class ProductionOrderEntity {
   int? startNo;
 
   int? endNo;
+
+  int? uniqueCodeCount;
 
   String? status;
 

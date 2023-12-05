@@ -28,9 +28,13 @@ class SBackButtonWidget extends StatelessWidget {
               width: 8.w,
             ),
           if (title != null)
-            Text(
-              title ?? '',
-              style: WowTextTheme.ts24w600(context),
+            Flexible(
+              child: Text(
+                title ?? '',
+                style: WowTextTheme.ts24w600(context),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             )
         ],
       ),

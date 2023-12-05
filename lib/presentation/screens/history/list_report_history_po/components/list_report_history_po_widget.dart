@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/common/constant/enum.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/model/list_report_history_po_model.dart';
-import 'package:s_factory/presentation/model/product_type_model.dart';
 import 'package:s_factory/presentation/screens/history/list_report_history_po/bloc/list_report_history_po_bloc.dart';
 import 'package:s_factory/presentation/screens/history/list_report_history_po/components/input_search_inspection_report_widget.dart';
 import 'package:s_factory/presentation/screens/history/list_report_history_po/components/item_report_history_po_widget.dart';
@@ -21,6 +20,8 @@ class ListReportHistoryPOWidget extends StatelessWidget {
         Text(
           'DANH SÁCH BÁO CÁO KIỂM TRA',
           style: WowTextTheme.ts32w600(context),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         SizedBox(
           height: 24.h,

@@ -40,9 +40,13 @@ class ItemReportHistoryPOWidget extends StatelessWidget {
           children: [
             // Row(
             //   children: [
-            Text(
-              item?.code ?? '',
-              style: WowTextTheme.ts16w600(context),
+            Expanded(
+              child: Text(
+                item?.code ?? '',
+                style: WowTextTheme.ts16w600(context),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             // SizedBox(
             //   width: 8.w,

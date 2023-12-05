@@ -9,3 +9,11 @@ class ToggleTorchEvent extends CameraScanEvent {
 
   final bool? isTurnOn;
 }
+
+class ToggleScanningEvent extends CameraScanEvent {
+  ToggleScanningEvent({
+    this.isTurnOn,
+  });
+
+  final bool? isTurnOn;
+}

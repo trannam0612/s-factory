@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
+import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/model/standard_product_model.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/bloc/report_detail_bloc.dart';
@@ -52,16 +53,18 @@ class _TableDetailReportDetailWidgetState
                 color: ColorConstant.kNeuTral02,
               ),
               columns: <DataColumn>[
-                _buildTitleTableWidget(context, value: 'STT'),
+                // _buildTitleTableWidget(context, value: 'STT'),
                 _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),
                 _buildTitleTableWidget(context, value: 'Tiêu chuẩn'),
                 ...List<DataColumn>.generate(listSerial.length, ((int index) {
                   return _buildTitleTableWidget(context,
-                      value: 'M-${index + 1}');
+                      value: listSerial[index]);
                 })),
                 _buildTitleTableWidget(context, value: 'Kết quả'),
                 _buildTitleTableWidget(context, value: 'Công cụ đo'),
               ],
+              dataRowMaxHeight: 50,
+              dataRowMinHeight: 30,
               rows: List<DataRow>.generate(
                 listProduct.length,
                 (int index) => _buildDataRow(
@@ -84,20 +87,22 @@ class _TableDetailReportDetailWidgetState
         (Set<MaterialState> states) => ColorConstant.kSupportInfo,
       ),
       cells: <DataCell>[
+        // _buildValueTableWidget(
+        //   context,
+        //   value: '${data.type}0${index + 1}',
+        //   bgColor: ColorConstant.kSupportInfo,
+        // ),
         _buildValueTableWidget(
           context,
-          value: '${data.type}0${index + 1}',
+          value: data.name.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
+          width: 300.w,
         ),
         _buildValueTableWidget(
           context,
-          value: data.name ?? '',
+          value: data.standard.clearSpace() ?? '',
           bgColor: ColorConstant.kSupportInfo,
-        ),
-        _buildValueTableWidget(
-          context,
-          value: data.standard ?? '',
-          bgColor: ColorConstant.kSupportInfo,
+          width: 200.w,
         ),
         ...List<DataCell>.generate(
           listStandardValue.length,
@@ -166,6 +171,7 @@ class _TableDetailReportDetailWidgetState
     ReportStandardResult? isPass,
     required String value,
     String? note,
+    double? width,
   }) =>
       DataCell(
         Tooltip(
@@ -178,6 +184,7 @@ class _TableDetailReportDetailWidgetState
               borderRadius: BorderRadius.circular(8.w)),
           textStyle: WowTextTheme.ts14w600(context).copyWith(),
           child: Container(
+            width: width,
             foregroundDecoration: note != null && note.isNotEmpty == true
                 ? const BadgeDecoration(
                     badgeColor: ColorConstant.kSupportWarning,

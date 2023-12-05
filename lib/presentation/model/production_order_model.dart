@@ -14,6 +14,7 @@ class ProductionOrderModel {
       uniqueCodes: entity?.uniqueCodes,
       unitCode: entity?.productType?.unitCode,
       unitName: entity?.productType?.name,
+      uniqueCodeCount: entity?.uniqueCodeCount,
       standardImageUrls: entity?.productType?.standardImageUrls,
       productType: ProductTypeModel.fromEntity(entity: entity?.productType),
     );
@@ -30,6 +31,7 @@ class ProductionOrderModel {
     this.unitName,
     this.standardImageUrls,
     this.productType,
+    this.uniqueCodeCount,
   });
 
   String get nameAndCode => '$unitCode - $unitName';
@@ -53,6 +55,8 @@ class ProductionOrderModel {
   String? unitCode;
 
   dynamic unitName;
+
+  int? uniqueCodeCount;
 
   List<String>? standardImageUrls;
 
