@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
+import 'package:s_factory/extended_text_theme.dart';
+import 'package:s_factory/presentation/utils/color_constant.dart';
 
 class SSmartListViewWidget<T> extends StatefulWidget {
   const SSmartListViewWidget({
@@ -13,6 +15,7 @@ class SSmartListViewWidget<T> extends StatefulWidget {
     this.separatorBuilder,
     this.padding,
     this.isShowLoading,
+    this.isEmpty,
   });
   final List<T> items;
   final Function(BuildContext, T data) itemBuilder;
@@ -21,6 +24,7 @@ class SSmartListViewWidget<T> extends StatefulWidget {
   final Widget? separatorBuilder;
   final EdgeInsets? padding;
   final bool? isShowLoading;
+  final bool? isEmpty;
 
   @override
   State<SSmartListViewWidget<T>> createState() =>
@@ -114,15 +118,24 @@ class _SSmartListViewWidgetState<T> extends State<SSmartListViewWidget<T>> {
         controller: _refreshController,
         onRefresh: _onRefresh,
         onLoading: _onLoadMore,
-        child: ListView.separated(
-          separatorBuilder: (BuildContext context, int index) =>
-              widget.separatorBuilder ?? const SizedBox.shrink(),
-          padding: widget.padding,
-          itemBuilder: (BuildContext context, int index) {
-            return widget.itemBuilder(context, widget.items[index]);
-          },
-          itemCount: widget.items.length,
-        ),
+        child: widget.items.isEmpty && widget.isEmpty == true
+            ? Center(
+                child: Text(
+                  'Chưa có dữ liệu\nVui lòng thử lại',
+                  style: WowTextTheme.ts20w600(context).copyWith(
+                    color: ColorConstant.kTextColor2,
+                  ),
+                ),
+              )
+            : ListView.separated(
+                separatorBuilder: (BuildContext context, int index) =>
+                    widget.separatorBuilder ?? const SizedBox.shrink(),
+                padding: widget.padding,
+                itemBuilder: (BuildContext context, int index) {
+                  return widget.itemBuilder(context, widget.items[index]);
+                },
+                itemCount: widget.items.length,
+              ),
       ),
     );
 

@@ -43,6 +43,8 @@ class ListReportHistoryPOWidget extends StatelessWidget {
                 isShowLoading:
                     state.getListReportHistoryPOState == LoadState.loading,
                 items: listReportHistory,
+                isEmpty: listReportHistory.isEmpty &&
+                    state.getListReportHistoryPOState == LoadState.success,
                 itemBuilder: (BuildContext p0, POReportModel data) =>
                     ItemReportHistoryPOWidget(item: data),
                 separatorBuilder: const SizedBox(

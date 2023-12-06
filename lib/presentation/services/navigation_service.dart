@@ -66,7 +66,7 @@ class NavigationService {
         actionsAlignment: MainAxisAlignment.center,
         actions: [
           SButtonWidget(
-            onClick: onTap,
+            onClick: onTap ?? pop,
             text: 'Đồng ý',
             textStyle: WowTextTheme.ts16w600(navigatorKey.currentContext!)
                 .copyWith(color: ColorConstant.kWhite),
@@ -108,6 +108,40 @@ class NavigationService {
   }
 
   void showNoInternetDialog() {
-    // showUnknownErrorPopUp(navigatorKey.currentContext!);
+    showUnknownErrorPopUp();
+  }
+
+  Future<void> showUnknownErrorPopUp() async {
+    // if(!_isShowingDialog){
+    //   _isShowingDialog = true;
+    showDialog(
+      context: navigatorKey.currentContext!,
+      builder: (_) => AlertDialog(
+        title: Text(
+          'Lỗi',
+          style: WowTextTheme.ts16w600(navigatorKey.currentContext!),
+          textAlign: TextAlign.center,
+        ),
+        content: SingleChildScrollView(
+          child: Text(
+            'Lỗi mạng',
+            style: WowTextTheme.ts14w600(navigatorKey.currentContext!),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          SButtonWidget(
+            onClick: pop,
+            text: 'Thử lại',
+            textStyle: WowTextTheme.ts16w600(navigatorKey.currentContext!)
+                .copyWith(color: ColorConstant.kWhite),
+            bgColor: ColorConstant.kPrimary01,
+          )
+        ],
+      ),
+    ).then((dynamic value) {
+      // _isShowingDialog = false;
+    });
   }
 }

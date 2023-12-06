@@ -39,6 +39,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   flutter_native_splash: ^2.3.6
   flutter_launcher_icons: ^0.13.1
+  permission_handler: ^11.0.1
   
 
 dev_dependencies:

@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:graphql/client.dart';
 import 'package:s_factory/common/configs/graphql/i_graphql_client.dart';
 import 'package:s_factory/common/configs/logger_config.dart';
 import 'package:s_factory/common/constant/core_constants.dart';
+import 'package:s_factory/common/di/app_injector.dart';
 import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/data/datasource/remote/responses/test_base_response.dart';
+import 'package:s_factory/presentation/services/navigation_service.dart';
 
 T handleResponse<T>(
     Map<String, dynamic> json, T Function(Object? json) fromJson) {
@@ -44,59 +47,67 @@ class GraphQLImplementation<T> implements IGraphQLClient {
     Map<String, dynamic> vars = const <String, dynamic>{},
   }) async {
     logi(message: 'Authorization:${_headers['Authorization']}');
+    try {
+      if (await Connectivity().checkConnectivity() == ConnectivityResult.none) {
+        return DataResponse(code: 1001, message: "Không có kết nối mạng");
+      } else {
+        final WatchQueryOptions<Object?> options = WatchQueryOptions(
+          document: gql(doc),
+          variables: vars,
+          operationName: tag,
+          fetchPolicy: FetchPolicy.noCache,
+          cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
+        );
+        DataResponse<T>? result;
+        // try {
+        logi(
+            message:
+                '-----------------QUERY GRAPHQL API REQUEST------------------');
+        logi(message: 'DOCUMENTS:\n$doc');
+        logi(message: 'VARIABLES:\n$vars');
 
-    final WatchQueryOptions<Object?> options = WatchQueryOptions(
-      document: gql(doc),
-      variables: vars,
-      operationName: tag,
-      fetchPolicy: FetchPolicy.noCache,
-      cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
-    );
-    DataResponse<T>? result;
-    // try {
-    logi(
-        message:
-            '-----------------QUERY GRAPHQL API REQUEST------------------');
-    logi(message: 'DOCUMENTS:\n$doc');
-    logi(message: 'VARIABLES:\n$vars');
+        final QueryResult<Object?> response = await _client.query(options);
 
-    final QueryResult<Object?> response = await _client.query(options);
+        logi(
+            message:
+                '-----------------QUERY GRAPHQL API RESPONSE------------------');
+        logi(message: 'DATA:\n${response.toString()}');
 
-    logi(
-        message:
-            '-----------------QUERY GRAPHQL API RESPONSE------------------');
-    logi(message: 'DATA:\n${response.toString()}');
+        //
+        // if (response.hasException || response.exception != null) {
+        //   final Iterable<String>? errors = response.exception?.graphqlErrors
+        //       .map((GraphQLError e) => e.message);
+        //   // result = DataResponse<T>?;
+        //   result?.message = errors?.first;
+        //   logi(message: 'result?.message${result?.message}');
+        //   result?.code = NetworkStatusCode.badRequest;
+        //   logi(message: 'result?.code${result?.code}');
 
-    //
-    // if (response.hasException || response.exception != null) {
-    //   final Iterable<String>? errors = response.exception?.graphqlErrors
-    //       .map((GraphQLError e) => e.message);
-    //   // result = DataResponse<T>?;
-    //   result?.message = errors?.first;
-    //   logi(message: 'result?.message${result?.message}');
-    //   result?.code = NetworkStatusCode.badRequest;
-    //   logi(message: 'result?.code${result?.code}');
+        //   return result;
+        // }
 
-    //   return result;
-    // }
-
-    //
-    result = DataResponse<T>.fromGraphQLReq(response, tag);
-    if (response.hasException || response.exception != null) {
-      result.code = NetworkStatusCode.newsError;
-    } else {
-      result.code = NetworkStatusCode.success;
+        //
+        result = DataResponse<T>.fromGraphQLReq(response, tag);
+        if (response.hasException || response.exception != null) {
+          result.code = NetworkStatusCode.newsError;
+        } else {
+          result.code = NetworkStatusCode.success;
+        }
+        // } catch (e) {
+        //   loge(message: 'ERROR:\n${e.toString()}');
+        //   if (e is OperationException) {
+        //     final List<String> errors =
+        //         e.graphqlErrors.map((GraphQLError e) => e.message).toList();
+        //     result?.message = errors.first;
+        //     result?.code = NetworkStatusCode.badRequest;
+        //   }
+        // }
+        return result;
+      }
+    } catch (_) {
+      loge(message: "CAN'T CHECK CONNECTIVITY");
+      return DataResponse(code: 1001, message: "CAN'T CHECK CONNECTIVITY");
     }
-    // } catch (e) {
-    //   loge(message: 'ERROR:\n${e.toString()}');
-    //   if (e is OperationException) {
-    //     final List<String> errors =
-    //         e.graphqlErrors.map((GraphQLError e) => e.message).toList();
-    //     result?.message = errors.first;
-    //     result?.code = NetworkStatusCode.badRequest;
-    //   }
-    // }
-    return result;
   }
 
   Map<String, dynamic> parseData(String data) {
@@ -110,7 +121,13 @@ class GraphQLImplementation<T> implements IGraphQLClient {
     Map<String, dynamic> vars = const <String, dynamic>{},
   }) async {
     logi(message: 'Authorization:${_headers['Authorization']}');
-
+    try {
+      if (await Connectivity().checkConnectivity() == ConnectivityResult.none) {
+        getIt<NavigationService>().showNoInternetDialog();
+      }
+    } catch (_) {
+      loge(message: "CAN'T CHECK CONNECTIVITY");
+    }
     final WatchQueryOptions<Object?> options = WatchQueryOptions(
       document: gql(doc),
       variables: vars,

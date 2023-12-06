@@ -29,26 +29,29 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         event.phone,
         event.password,
       );
-      DataState<AuthEntity> dataStateRole =
-          await authUseCase.identityLoginWithBusinessRole(
-        '1091ff33-a72c-4a63-ac99-95e6f20d1006',
-      );
-      logi(message: 'dataState.data?.token:${dataState.data?.token}');
+
       final SharedPreferences sharedPreferences = getIt();
-      if (dataState.isSuccess() && dataStateRole.isSuccess()) {
+      if (dataState.isSuccess()) {
+        DataState<AuthEntity> dataStateRole =
+            await authUseCase.identityLoginWithBusinessRole(
+          '1091ff33-a72c-4a63-ac99-95e6f20d1006',
+        );
+        logi(message: 'dataState.data?.token:${dataState.data?.token}');
         final String? token = dataState.data?.token;
         final String? tokenRole = dataStateRole.data?.token;
-        if (token != null) {
-          sharedPreferences.setString('kToken', token);
+        if (dataStateRole.isSuccess()) {
+          if (token != null) {
+            sharedPreferences.setString('kToken', token);
+          }
+
+          final String? tokenInShared = sharedPreferences.getString('kToken');
+
+          logi(message: 'tokenInShared:${tokenInShared}');
+
+          emit(state.copyWith(
+            loginState: LoadState.success,
+          ));
         }
-
-        final String? tokenInShared = sharedPreferences.getString('kToken');
-
-        logi(message: 'tokenInShared:${tokenInShared}');
-
-        emit(state.copyWith(
-          loginState: LoadState.success,
-        ));
       } else {
         emit(state.copyWith(
           loginState: LoadState.failure,

@@ -14,6 +14,9 @@ class ListResultReportWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ListReportHistoryBloc _historyBloc = context.read();
     return BlocConsumer<ListReportHistoryBloc, ListReportHistoryState>(
+      buildWhen: (previous, current) =>
+          previous.getListReportHistoryState !=
+          current.getListReportHistoryState,
       builder: (BuildContext context, ListReportHistoryState state) {
         final List<ProductionOrderModel> listReportHistory =
             state.listReport ?? <ProductionOrderModel>[];
@@ -25,6 +28,8 @@ class ListResultReportWidget extends StatelessWidget {
           ),
           isShowLoading: state.getListReportHistoryState == LoadState.loading,
           items: listReportHistory,
+          isEmpty: listReportHistory.isEmpty &&
+              state.getListReportHistoryState == LoadState.success,
           itemBuilder: (BuildContext p0, ProductionOrderModel data) =>
               ItemResultWidget(item: data),
           separatorBuilder: const SizedBox(
