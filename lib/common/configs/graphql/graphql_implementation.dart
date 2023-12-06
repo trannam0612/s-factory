@@ -14,6 +14,7 @@ T handleResponse<T>(
 
 class GraphQLImplementation<T> implements IGraphQLClient {
   GraphQLImplementation(String url, String token) {
+    logi(message: 'url:$url');
     if (token.isNotNullOrEmpty) {
       _headers['Authorization'] = 'Bearer $token';
     }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:s_factory/common/constant/core_constants.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
@@ -91,6 +91,24 @@ extension StringNullExtension on String? {
 }
 
 extension StringExtension on String {
+  int isCountLine({
+    required double fontSize,
+    required double lineHeight,
+    required double containerWidth,
+  }) {
+    TextPainter painter = TextPainter(
+      text: TextSpan(
+        text: this,
+        style: TextStyle(fontSize: fontSize, height: lineHeight),
+      ),
+      maxLines: 999, // Số lớn để đảm bảo tính toán đúng
+      textDirection: TextDirection.ltr,
+    );
+
+    painter.layout(maxWidth: containerWidth);
+    return painter.computeLineMetrics().length;
+  }
+
   String formatPhoneNumber() {
     String s = toString();
     if (s.isNotEmpty) {
@@ -370,7 +388,7 @@ extension StringMessageExtension on String {
 
   String get formatCurrencyWithoutSymbol {
     const String defaultValue = '0';
-    final NumberFormat formatter = NumberFormat.simpleCurrency(
+    final intl.NumberFormat formatter = intl.NumberFormat.simpleCurrency(
       locale: LocaleCodes.vi,
       name: '',
       decimalDigits: 0,

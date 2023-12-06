@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/model/standard_product_model.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/bloc/report_detail_bloc.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/table_detail_report_detail_widget.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/components/table_overview_report_detail_widget.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
+import 'package:s_factory/presentation/utils/style_constant.dart';
 
 class TabBarTableDetailReportWidget extends StatefulWidget {
   TabBarTableDetailReportWidget({super.key});
@@ -71,8 +73,32 @@ class _TabBarTableDetailReportWidgetState
                         <StandardProductModel>[];
                 return SizedBox(
                   height: value == 0
-                      ? (listStandardDetail.length + 2) * 50
-                      : (listStandardOverview.length + 2) * 50,
+                      ? (listStandardDetail.length + 2) *
+                          (listStandardDetail
+                                  .any((StandardProductModel element) =>
+                                      (element.standard?.isCountLine(
+                                            fontSize: 14,
+                                            lineHeight:
+                                                StyleConstant.kLineHeight2214,
+                                            containerWidth: 200.w,
+                                          ) ??
+                                          0) >=
+                                      3)
+                              ? 125.h
+                              : 60.h)
+                      : (listStandardOverview.length + 2) *
+                          (listStandardOverview
+                                  .any((StandardProductModel element) =>
+                                      (element.standard?.isCountLine(
+                                            fontSize: 14,
+                                            lineHeight:
+                                                StyleConstant.kLineHeight2214,
+                                            containerWidth: 200.w,
+                                          ) ??
+                                          0) >=
+                                      3)
+                              ? 125.h
+                              : 45.h),
                   child: const TabBarView(
                     physics: NeverScrollableScrollPhysics(),
                     children: <Widget>[

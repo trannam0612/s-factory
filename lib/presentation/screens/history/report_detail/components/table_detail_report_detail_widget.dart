@@ -8,6 +8,7 @@ import 'package:s_factory/presentation/model/standard_product_model.dart';
 import 'package:s_factory/presentation/screens/history/report_detail/bloc/report_detail_bloc.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
+import 'package:s_factory/presentation/utils/style_constant.dart';
 
 class TableDetailReportDetailWidget extends StatefulWidget {
   const TableDetailReportDetailWidget({
@@ -63,8 +64,17 @@ class _TableDetailReportDetailWidgetState
                 _buildTitleTableWidget(context, value: 'Kết quả'),
                 _buildTitleTableWidget(context, value: 'Công cụ đo'),
               ],
-              dataRowMaxHeight: 50,
-              dataRowMinHeight: 30,
+              dataRowMaxHeight:
+                  listProduct.any((StandardProductModel element) =>
+                          (element.standard?.isCountLine(
+                                fontSize: 14,
+                                lineHeight: StyleConstant.kLineHeight2214,
+                                containerWidth: 200.w,
+                              ) ??
+                              0) >=
+                          3)
+                      ? 125.h
+                      : 60.h,
               rows: List<DataRow>.generate(
                 listProduct.length,
                 (int index) => _buildDataRow(

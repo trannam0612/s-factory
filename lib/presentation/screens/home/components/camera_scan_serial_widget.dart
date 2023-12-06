@@ -30,16 +30,44 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget>
 
   late CameraScanBloc _cameraScanBloc;
   late HomeBloc _homeBloc;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("app in resumed");
+        break;
+      case AppLifecycleState.inactive:
+        print("app in inactive");
+        controller.stop();
+        _cameraScanBloc.add(ToggleScanningEvent(isTurnOn: false));
+        break;
+      case AppLifecycleState.paused:
+        print("app in paused");
+        controller.stop();
+        _cameraScanBloc.add(ToggleScanningEvent(isTurnOn: false));
+        break;
+      case AppLifecycleState.detached:
+        print("app in detached");
+        controller.stop();
+        _cameraScanBloc.add(ToggleScanningEvent(isTurnOn: false));
+        break;
+      case AppLifecycleState.hidden:
+        // TODO: Handle this case.
+        break;
+    }
+  }
 
   @override
   void initState() {
     controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.noDuplicates,
       cameraResolution: Size(1024, 390),
+      autoStart: false,
     );
     _cameraScanBloc = getIt();
     _homeBloc = context.read();
     controller.stop();
+
     logi(message: 'controller.torchState:${controller.torchState}');
 
     super.initState();
@@ -88,7 +116,8 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget>
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            SizedBox(
+            Container(
+              color: ColorConstant.kBlackColor,
               width: double.infinity,
               height: 390.h,
               child: MobileScanner(
@@ -211,9 +240,7 @@ class _CameraScanSerialWidgetState extends State<CameraScanSerialWidget>
                                   isTurnOn ? 'Stop' : 'Scan',
                                   style:
                                       WowTextTheme.ts14w600(context).copyWith(
-                                    color: !isTurnOn
-                                        ? ColorConstant.kTextColor
-                                        : ColorConstant.kWhite,
+                                    color: ColorConstant.kWhite,
                                   ),
                                 ),
                               ));

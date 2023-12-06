@@ -10,7 +10,7 @@ class CameraScanBloc extends Bloc<CameraScanEvent, CameraScanState> {
   CameraScanBloc()
       : super(const CameraScanState(
           isTurnOnFlash: false,
-          isTurnOnScan: true,
+          isTurnOnScan: false,
         )) {
     on<ToggleTorchEvent>(_handleToggleTorch);
     on<ToggleScanningEvent>(_handleToggleScanning);

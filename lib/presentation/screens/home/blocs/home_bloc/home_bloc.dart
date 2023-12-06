@@ -111,8 +111,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final ProductModel productModel =
             ProductModel.fromEntity(checkSerialEntity: dataState.data);
         // Check PO sản phẩm so với list
-        if (listProduct.any(
-            (ProductModel element) => element.poCode != productModel.poCode)) {
+        if (listProduct
+            .any((ProductModel element) => element.poId != productModel.poId)) {
           emit(state.copyWith(
             checkSerialState: LoadState.failure,
             message: 'Sản phẩm không cùng PO với sản phẩm trước đó.',

@@ -15,6 +15,7 @@ import 'package:s_factory/presentation/screens/report/components/bottom_sheet_co
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
+import 'package:s_factory/presentation/utils/style_constant.dart';
 
 class TableReportDetailWidget extends StatefulWidget {
   const TableReportDetailWidget({
@@ -78,8 +79,18 @@ class _TableReportDetailWidgetState extends State<TableReportDetailWidget> {
               border: TableBorder.all(
                 color: ColorConstant.kNeuTral02,
               ),
-              dataRowMaxHeight: 50,
-              dataRowMinHeight: 30,
+              dataRowMaxHeight:
+                  listProduct.any((StandardProductReportData element) =>
+                          (element.standard?.isCountLine(
+                                fontSize: 14,
+                                lineHeight: StyleConstant.kLineHeight2214,
+                                containerWidth: 200.w,
+                              ) ??
+                              0) >=
+                          3)
+                      ? 125.h
+                      : 60.h,
+              // dataRowMinHeight: 30,
               columns: <DataColumn>[
                 // _buildTitleTableWidget(context, value: 'STT'),
                 _buildTitleTableWidget(context, value: 'Hạng mục kiểm tra'),

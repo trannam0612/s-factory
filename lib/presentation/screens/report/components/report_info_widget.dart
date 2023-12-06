@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:s_factory/common/extensions/string_extension.dart';
 import 'package:s_factory/extended_text_theme.dart';
 import 'package:s_factory/presentation/data/product_report_data.dart';
 import 'package:s_factory/presentation/model/production_order_model.dart';
@@ -9,6 +10,7 @@ import 'package:s_factory/presentation/screens/report/components/table_report_de
 import 'package:s_factory/presentation/screens/report/components/table_report_overview_widget.dart';
 import 'package:s_factory/presentation/screens/report/report_bloc/report_bloc.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
+import 'package:s_factory/presentation/utils/style_constant.dart';
 
 class ReportInfoWidget extends StatefulWidget {
   const ReportInfoWidget({
@@ -72,10 +74,35 @@ class _ReportInfoWidgetState extends State<ReportInfoWidget>
                     state.listProductDetail ?? <StandardProductReportData>[];
                 final List<StandardProductReportData> listProductOverView =
                     state.listProductOverView ?? <StandardProductReportData>[];
+
                 return SizedBox(
                   height: value == 0
-                      ? (listProductDetail.length + 2) * 50
-                      : (listProductOverView.length + 2) * 50,
+                      ? (listProductDetail.length + 2) *
+                          (listProductDetail
+                                  .any((StandardProductReportData element) =>
+                                      (element.standard?.isCountLine(
+                                            fontSize: 14,
+                                            lineHeight:
+                                                StyleConstant.kLineHeight2214,
+                                            containerWidth: 200.w,
+                                          ) ??
+                                          0) >=
+                                      3)
+                              ? 125.h
+                              : 60.h)
+                      : (listProductOverView.length + 2) *
+                          (listProductOverView
+                                  .any((StandardProductReportData element) =>
+                                      (element.standard?.isCountLine(
+                                            fontSize: 14,
+                                            lineHeight:
+                                                StyleConstant.kLineHeight2214,
+                                            containerWidth: 200.w,
+                                          ) ??
+                                          0) >=
+                                      3)
+                              ? 125.h
+                              : 45.h),
                   child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: <Widget>[
