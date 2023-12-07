@@ -15,7 +15,9 @@ class DataSuccess<T> extends DataState<T> {
 class DataFailed<T> extends DataState<T> {
   const DataFailed(
     String? error,
-  ) : super(error: error);
+  ) : super(
+          error: error,
+        );
 }
 
 extension DataStateExtensions<T> on DataState<T> {

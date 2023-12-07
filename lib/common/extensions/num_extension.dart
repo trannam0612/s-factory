@@ -20,3 +20,12 @@ extension IntExtension on int? {
     return painter.computeLineMetrics().length;
   }
 }
+
+extension IntTimeExtension on int? {
+  String formatTime() {
+    int minutes = (this ?? 0) ~/ 60;
+    int seconds = ((this ?? 0) % 60);
+    return "${minutes.toString().padLeft(2, "0")}.${seconds.toString().padLeft(2, "0")}";
+    // return '${(Duration(seconds: this ?? 0))}'.split('.')[0].padLeft(8, '0');
+  }
+}

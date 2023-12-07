@@ -21,6 +21,8 @@ class WowTitleTextFieldWidget extends StatefulWidget {
     this.controller,
     this.validator,
     this.inputFormatters,
+    this.width,
+    this.bgColor = ColorConstant.kWhite,
   }) : super(key: key);
 
   final String? title;
@@ -35,6 +37,8 @@ class WowTitleTextFieldWidget extends StatefulWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
+  final double? width;
+  final Color? bgColor;
 
   @override
   State<WowTitleTextFieldWidget> createState() =>
@@ -71,106 +75,111 @@ class _WowTitleTextFieldWidgetState extends State<WowTitleTextFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: widget.requiredField == true ? ' *' : '',
-                    style: WowTextTheme.ts14w600(context).copyWith(
-                      color: ColorConstant.kSupportError2,
+    return SizedBox(
+      width: widget.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: widget.requiredField == true ? ' *' : '',
+                      style: WowTextTheme.ts14w600(context).copyWith(
+                        color: ColorConstant.kSupportError2,
+                      ),
                     ),
+                  ],
+                  text: widget.title ?? widget.hintText,
+                  style: WowTextTheme.ts14w600(context).copyWith(
+                    color: ColorConstant.kTextColor,
                   ),
-                ],
-                text: widget.title ?? widget.hintText,
-                style: WowTextTheme.ts14w600(context).copyWith(
+                ),
+              ),
+              widget.topSuffixItem ?? const SizedBox.shrink()
+            ],
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _obscureTextNotifier,
+            builder: (_, bool obscureText, __) {
+              return TextFormField(
+                inputFormatters: widget.inputFormatters,
+                controller: widget.controller,
+                style: WowTextTheme.ts16w400(context).copyWith(
                   color: ColorConstant.kTextColor,
                 ),
-              ),
-            ),
-            widget.topSuffixItem ?? const SizedBox.shrink()
-          ],
-        ),
-        SizedBox(
-          height: 8.h,
-        ),
-        ValueListenableBuilder<bool>(
-          valueListenable: _obscureTextNotifier,
-          builder: (_, bool obscureText, __) {
-            return TextFormField(
-              inputFormatters: widget.inputFormatters,
-              controller: widget.controller,
-              style: WowTextTheme.ts16w400(context).copyWith(
-                color: ColorConstant.kTextColor,
-              ),
-              keyboardType: widget.textInputType,
-              obscureText: obscureText,
-              onChanged: widget.onChanged,
-              textAlignVertical: TextAlignVertical.center,
-              maxLines: widget.maxLine,
-              validator: widget.validator,
-              decoration: InputDecoration(
-                focusedBorder: widget.customBorder ?? focusBorder,
-                enabledBorder: widget.customBorder ?? border,
-                disabledBorder: widget.customBorder ?? border,
-                border: widget.customBorder ?? border,
-                hintText: widget.hintText,
-                hintStyle: WowTextTheme.ts16w400(context).copyWith(
-                  color: ColorConstant.kNeuTral04,
+                keyboardType: widget.textInputType,
+                obscureText: obscureText,
+                onChanged: widget.onChanged,
+                textAlignVertical: TextAlignVertical.center,
+                maxLines: widget.maxLine,
+                validator: widget.validator,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: widget.bgColor,
+                  focusedBorder: widget.customBorder ?? focusBorder,
+                  enabledBorder: widget.customBorder ?? border,
+                  disabledBorder: widget.customBorder ?? border,
+                  border: widget.customBorder ?? border,
+                  hintText: widget.hintText,
+                  hintStyle: WowTextTheme.ts16w400(context).copyWith(
+                    color: ColorConstant.kNeuTral04,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  labelStyle: WowTextTheme.ts14w600(context)
+                      .copyWith(color: ColorConstant.kNeuTral02, height: 15),
+                  // focusedBorder: border,
+                  // alignLabelWithHint: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelStyle: WowTextTheme.ts14w600(context).copyWith(
+                    color: ColorConstant.kNeuTral04,
+                  ),
+                  suffixIcon: widget.obscureText
+                      ? ValueListenableBuilder<bool>(
+                          valueListenable: _obscureTextNotifier,
+                          builder: (_, bool enabled, __) {
+                            return GestureDetector(
+                              onTap: () {
+                                _obscureTextNotifier.value =
+                                    !_obscureTextNotifier.value;
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  SvgPicture.asset(enabled
+                                      ? SvgPaths.icVisibility
+                                      : SvgPaths.icVisibility),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      : null,
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                labelStyle: WowTextTheme.ts14w600(context)
-                    .copyWith(color: ColorConstant.kNeuTral02, height: 15),
-                // focusedBorder: border,
-                // alignLabelWithHint: true,
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-                floatingLabelStyle: WowTextTheme.ts14w600(context).copyWith(
-                  color: ColorConstant.kNeuTral04,
-                ),
-                suffixIcon: widget.obscureText
-                    ? ValueListenableBuilder<bool>(
-                        valueListenable: _obscureTextNotifier,
-                        builder: (_, bool enabled, __) {
-                          return GestureDetector(
-                            onTap: () {
-                              _obscureTextNotifier.value =
-                                  !_obscureTextNotifier.value;
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                SvgPicture.asset(enabled
-                                    ? SvgPaths.icVisibility
-                                    : SvgPaths.icVisibility),
-                              ],
-                            ),
-                          );
-                        },
-                      )
-                    : null,
-              ),
-              // decoration: InputDecoration(
-              //   focusedBorder: Border,
-              //   enabledBorder: border,
-              //   border: border,
-              //   hintText: widget.hintText,
-              //   hintStyle: ExtendedTextTheme.body14MedTextStyle(context).copyWith(
-              //     color: ColorConstant.kNeutral300Color,
-              //   ),
-              //   disabledBorder: border,
-              //   contentPadding: const EdgeInsets.only(
-              //       left: 20, right: 15, top: 10, bottom: 10),
-              // ),
-            );
-          },
-        ),
-      ],
+                // decoration: InputDecoration(
+                //   focusedBorder: Border,
+                //   enabledBorder: border,
+                //   border: border,
+                //   hintText: widget.hintText,
+                //   hintStyle: ExtendedTextTheme.body14MedTextStyle(context).copyWith(
+                //     color: ColorConstant.kNeutral300Color,
+                //   ),
+                //   disabledBorder: border,
+                //   contentPadding: const EdgeInsets.only(
+                //       left: 20, right: 15, top: 10, bottom: 10),
+                // ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

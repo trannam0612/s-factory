@@ -10,6 +10,7 @@ import 'package:s_factory/presentation/app/app_bloc.dart';
 import 'package:s_factory/presentation/app/app_event.dart';
 import 'package:s_factory/presentation/model/item_product_model.dart';
 import 'package:s_factory/presentation/model/production_order_model.dart';
+import 'package:s_factory/presentation/screens/auth/account/account_screen.dart';
 import 'package:s_factory/presentation/screens/home/blocs/home_bloc/home_bloc.dart';
 import 'package:s_factory/presentation/screens/home/components/button_confirm_check_report_widget.dart';
 import 'package:s_factory/presentation/screens/home/components/camera_scan_serial_widget.dart';
@@ -55,28 +56,33 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         leadingWidth: 150.w,
         action: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(12.w),
-            child: Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  32.w,
+          InkWell(
+            onTap: () {
+              getIt<NavigationService>().navigateTo(AccountScreen.pathRoute);
+            },
+            child: Padding(
+              padding: EdgeInsets.all(12.w),
+              child: Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    32.w,
+                  ),
+                  color: ColorConstant.kPrimary02,
                 ),
-                color: ColorConstant.kPrimary02,
-              ),
-              child: Row(
-                children: <Widget>[
-                  SCricleAvatarWidget(
-                    size: 32.w,
-                    urlImage:
-                        'https://st.quantrimang.com/photos/image/2021/08/16/Anh-vit-cute-6.jpg',
-                  ),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  SvgPicture.asset(SvgPaths.icMenu)
-                ],
+                child: Row(
+                  children: <Widget>[
+                    SCricleAvatarWidget(
+                      size: 32.w,
+                      urlImage:
+                          'https://st.quantrimang.com/photos/image/2021/08/16/Anh-vit-cute-6.jpg',
+                    ),
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                    SvgPicture.asset(SvgPaths.icMenu)
+                  ],
+                ),
               ),
             ),
           )

@@ -2,6 +2,7 @@ class SvgPaths {
   static const String notificationErrorIcon =
       'assets/svg/ic_notification_error.svg';
   static const String icLogo = 'assets/icons/ic_logo.svg';
+  static const String icLogoApp = 'assets/icons/ic_logo_app.svg';
   static const String icMenu = 'assets/icons/ic_menu.svg';
   static const String closeErrNotificationIcon =
       'assets/icons/ic_close_err_notification.svg';
@@ -26,4 +27,8 @@ class SvgPaths {
 class AnimationPaths {
   static const String loadingDotsAnimation =
       'assets/animations/loading_dots.json';
+}
+
+class ImgPaths {
+  static const String imgBackground = 'assets/images/img_background.png';
 }

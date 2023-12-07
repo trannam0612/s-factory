@@ -11,6 +11,7 @@ import 'package:s_factory/presentation/app/app_event.dart';
 import 'package:s_factory/presentation/screens/auth/forgot_password/input_phone/input_phone_screen.dart';
 import 'package:s_factory/presentation/screens/auth/login/bloc/login_bloc.dart';
 import 'package:s_factory/presentation/screens/home/home_screen.dart';
+import 'package:s_factory/presentation/screens/utils.dart';
 import 'package:s_factory/presentation/services/navigation_service.dart';
 import 'package:s_factory/presentation/utils/assets.dart';
 import 'package:s_factory/presentation/utils/color_constant.dart';
@@ -32,9 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _txtPassword;
 
   final LoginBloc loginBloc = getIt();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _txtPhone = TextEditingController(text: '0855234900');
     _txtPassword = TextEditingController(text: 'HungDN96');
@@ -42,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _txtPhone.dispose();
     _txtPassword.dispose();
@@ -51,6 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return SScaffoldWidget(
+      bgPath: ImgPaths.imgBackground,
+      backgroundColor: ColorConstant.kPrimary02,
       body: BlocProvider<LoginBloc>(
         create: (BuildContext context) => loginBloc,
         child: BlocListener<LoginBloc, LoginState>(
@@ -80,83 +82,124 @@ class _LoginScreenState extends State<LoginScreen> {
               default:
             }
           },
-          child: Container(
-            padding: EdgeInsets.all(16.w),
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: <Widget>[
-                SvgPicture.asset(SvgPaths.icLogo),
-                const Spacer(),
-                Text(
-                  'Đăng nhập',
-                  style: WowTextTheme.ts28w600(context),
-                ),
-                const Spacer(),
-                WowTitleTextFieldWidget(
-                  hintText: 'Tên đăng nhập',
-                  requiredField: true,
-                  controller: _txtPhone,
-                ),
-                SizedBox(
-                  height: 32.h,
-                ),
-                WowTitleTextFieldWidget(
-                  hintText: 'Mật khẩu',
-                  obscureText: true,
-                  requiredField: true,
-                  controller: _txtPassword,
-                  topSuffixItem: GestureDetector(
-                    onTap: () {
-                      getIt<NavigationService>()
-                          .navigateTo(InputPhoneScreen.pathRoute);
-                    },
-                    child: Text(
-                      'Quên mật khẩu?',
-                      style: WowTextTheme.ts14w400(context),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 32.h,
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Row(
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Container(
+              padding: EdgeInsets.all(16.w),
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: SizedBox(
+                  width: 500.w,
+                  child: Column(
                     children: <Widget>[
+                      const Spacer(),
                       SvgPicture.asset(
-                        SvgPaths.icUncheckOutline,
+                        SvgPaths.icLogoApp,
+                        width: 50.w,
+                        height: 50.w,
                       ),
                       SizedBox(
-                        width: 10.w,
+                        height: 8.h,
                       ),
                       Text(
-                        'Ghi nhớ đăng nhập',
-                        style: WowTextTheme.ts14w600(context),
+                        'FACTORY',
+                        style: WowTextTheme.ts32w700(context),
+                      ),
+                      SizedBox(
+                        height: 16.h,
+                      ),
+                      Text(
+                        'Đăng nhập',
+                        style: WowTextTheme.ts28w600(context),
+                      ),
+                      const Spacer(),
+                      WowTitleTextFieldWidget(
+                        hintText: 'Tên đăng nhập',
+                        requiredField: true,
+                        controller: _txtPhone,
+                        validator: (String? text) =>
+                            ValidatorUtils().validatorEmpty(
+                          text,
+                          title: 'Tên đăng nhập không được để trống',
+                        ),
+                      ),
+                      SizedBox(
+                        height: 32.h,
+                      ),
+                      WowTitleTextFieldWidget(
+                        hintText: 'Mật khẩu',
+                        obscureText: true,
+                        requiredField: true,
+                        controller: _txtPassword,
+                        validator: (String? text) =>
+                            ValidatorUtils().validatorEmpty(
+                          text,
+                          title: 'Mật khẩu không được để trống',
+                        ),
+                        topSuffixItem: GestureDetector(
+                          onTap: () {
+                            getIt<NavigationService>()
+                                .navigateTo(InputPhoneScreen.pathRoute);
+                          },
+                          child: Text(
+                            'Quên mật khẩu?',
+                            style: WowTextTheme.ts14w400(context),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 32.h,
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Row(
+                          children: <Widget>[
+                            SvgPicture.asset(
+                              SvgPaths.icUncheckOutline,
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              'Ghi nhớ đăng nhập',
+                              style: WowTextTheme.ts14w600(context),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(
+                        flex: 1,
+                      ),
+                      SButtonWidget(
+                        onClick: () {
+                          final bool? isValidate =
+                              _formKey.currentState?.validate();
+                          if (isValidate == true) {
+                            loginBloc.add(HandleLoginEvent(
+                              phone: _txtPhone.text,
+                              password: _txtPassword.text,
+                            ));
+                          } else {
+                            return;
+                          }
+                        },
+                        text: 'Đăng nhập',
+                        margin: EdgeInsets.zero,
+                        width: double.infinity,
+                        bgColor: ColorConstant.kPrimary01,
+                        textStyle: WowTextTheme.ts14w600(context).copyWith(
+                          color: ColorConstant.kWhite,
+                        ),
+                      ),
+                      const Spacer(
+                        flex: 8,
                       ),
                     ],
                   ),
                 ),
-                const Spacer(
-                  flex: 4,
-                ),
-                SButtonWidget(
-                  onClick: () {
-                    loginBloc.add(HandleLoginEvent(
-                      phone: _txtPhone.text,
-                      password: _txtPassword.text,
-                    ));
-                  },
-                  text: 'Đăng nhập',
-                  margin: EdgeInsets.zero,
-                  width: double.infinity,
-                  bgColor: ColorConstant.kPrimary01,
-                  textStyle: WowTextTheme.ts14w600(context).copyWith(
-                    color: ColorConstant.kWhite,
-                  ),
-                ),
-                const Spacer(),
-              ],
+              ),
             ),
           ),
         ),

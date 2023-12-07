@@ -12,15 +12,19 @@ class SScaffoldWidget extends StatelessWidget {
     super.key,
     this.appBar,
     this.body,
+    this.bgPath,
+    this.backgroundColor,
     this.isScroll = true,
   });
   final PreferredSizeWidget? appBar;
   final Widget? body;
   final bool? isScroll;
+  final Color? backgroundColor;
+  final String? bgPath;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.kWhite,
+      backgroundColor: backgroundColor ?? ColorConstant.kWhite,
       appBar: appBar,
       body: BlocProvider<AppBloc>.value(
           value: context.read<AppBloc>(),
@@ -60,6 +64,17 @@ class SScaffoldWidget extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return body ?? const SizedBox.shrink();
+    return bgPath != null
+        ? Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(
+                    bgPath!,
+                  ),
+                  fit: BoxFit.contain,
+                  alignment: Alignment.bottomCenter),
+            ),
+            child: body)
+        : body ?? const SizedBox.shrink();
   }
 }

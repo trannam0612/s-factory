@@ -51,6 +51,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(state.copyWith(
             loginState: LoadState.success,
           ));
+        } else {
+          emit(state.copyWith(
+            loginState: LoadState.failure,
+            message: '${dataStateRole.error}',
+          ));
         }
       } else {
         emit(state.copyWith(

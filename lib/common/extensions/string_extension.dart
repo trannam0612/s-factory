@@ -91,6 +91,10 @@ extension StringNullExtension on String? {
 }
 
 extension StringExtension on String {
+  String hidePhone() {
+    return replaceRange(length - 5, length, '*' * 5);
+  }
+
   int isCountLine({
     required double fontSize,
     required double lineHeight,

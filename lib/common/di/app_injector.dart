@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:s_factory/common/di/api_di.dart';
 import 'package:s_factory/common/di/base_graphql_di%20.dart';
 import 'package:s_factory/common/di/bloc_di.dart';
+import 'package:s_factory/common/di/cubit_di.dart';
 import 'package:s_factory/common/di/graphql_di.dart';
 import 'package:s_factory/common/di/local_data_source_di.dart';
 import 'package:s_factory/common/di/logger_di.dart';
@@ -43,6 +44,7 @@ class AppInjector {
     await RepositoryDI.init(injector);
     await UseCaseDI.init(injector);
     await BlocDI.init(injector);
+    await CubitDI.init(injector);
     await ScreenDI.init(injector);
   }
 }

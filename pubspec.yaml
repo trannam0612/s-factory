@@ -40,6 +40,7 @@ dependencies:
   flutter_native_splash: ^2.3.6
   flutter_launcher_icons: ^0.13.1
   permission_handler: ^11.0.1
+  nested: ^1.0.0
   
 
 dev_dependencies:
